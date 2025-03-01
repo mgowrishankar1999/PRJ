@@ -1,0 +1,66 @@
+
+//newsevents.jsx
+
+import React from "react";
+import { Link, useLocation } from 'react-router-dom';
+import HomeNavbar from "./navbar";
+import MenuBar from "./menubar";
+import SidebarList from "./sidebar";
+import Footer from "./footer";
+import ImageGallery from "./Image";
+
+
+const newsevents = () => {
+
+    const location = useLocation();
+    const currentPath = location.pathname.split('/').filter(Boolean);
+    return (
+        <div className=" min-h-screen flex flex-col bg-white ">
+            <div class=''>
+
+                {/* Navbar */}
+                <HomeNavbar />
+                <MenuBar />
+                {/* Menu Bar */}
+            </div>
+
+            <div className="w-full mx-auto px-4 py-8 flex flex-row gap-12 bg-white ">
+                {/* Sidebar on Left */}
+                <aside className="w-full bg-white p-2 rounded-lg shadow-sm ">
+                    <SidebarList />
+                </aside>
+
+
+                {/* Main Content */}
+                <main className="w-4/1  bg-white p-8 shadow-sm flex flex-col rounded-lg ">
+                    {/* Dynamic Breadcrumb Navigation */}
+                    <div className="text-sm mb-2">
+                        <Link to="/" className="text-blue-500 hover:underline">
+                            Home
+                        </Link>
+                        {currentPath.map((segment, index) => (
+                            <span key={index}>
+                                <span className="mx-1">/</span>
+                                <span className="capitalize">{segment.replace('-', ' ')}</span>
+                            </span>
+                        ))}
+                    </div>
+
+                    <div className="text-3xl font-medium uppercase border-b-2 border-blue-500 pb-1 mb-4">newsevents</div>
+
+
+                    <p class=' text-lg text-gray-800 leading-relaxed p-2'>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+
+
+                </main>
+            </div>
+            <ImageGallery />
+            {/* Footer */}
+            <Footer />
+        </div>
+    );
+};
+
+export default newsevents;
