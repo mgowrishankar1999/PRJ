@@ -208,7 +208,11 @@ const AddNewSubscription = () => {
             </button>
             <button
               type="button"
-              onClick={() => navigate("/subscription")}
+              onClick={() => {
+                window.scrollTo(0, 0)
+                navigate("/subscription")
+              }
+              }
               className="btn btn-secondary"
             >
               Cancel

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../../common/modal";
 
 const AddNewAuthor = () => {
   const navigate = useNavigate();
@@ -31,6 +32,9 @@ const AddNewAuthor = () => {
   const [removeLogo, setRemoveLogo] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+
+  const [modal, setModal] = useState({ show: false, type: "success", message: "" });
+
 
   // ✅ Fetch universities for dropdown
   useEffect(() => {
@@ -151,20 +155,33 @@ const AddNewAuthor = () => {
       }
 
       const config = { headers: { "Content-Type": "multipart/form-data" } };
-
+      let response;
       if (id) {
         // Update existing author
-        await axios.put(`${BASE_URL}/api/authors/${id}`, formData, config);
+        response = await axios.put(`${BASE_URL}/api/authors/${id}`, formData, config);
         setMessage("Author updated successfully!");
       } else {
         // Create a new author
-        await axios.post(`${BASE_URL}/api/authors`, formData, config);
+        response = await axios.post(`${BASE_URL}/api/authors`, formData, config);
         setMessage("Author added successfully!");
       }
 
-      // Redirect after a short delay
-      setTimeout(() => navigate("/authors"), 2000);
+      if (response && (response.status === 200 || response.status === 201)) {
+        setModal({
+          show: true,
+          type: "success",
+          message: id ? "Journal updated successfully!" : "Journal added successfully!",
+        });
+
+        setTimeout(() => {
+          setModal({ show: false, type: "", message: "" });
+          navigate('/authors');
+          window.scrollTo(0, 0);
+        }, 800);
+      }
+
     } catch (error) {
+      setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
       console.error("Error saving author:", error);
       setMessage("Failed to save author. Check console for details.");
     } finally {
@@ -396,7 +413,11 @@ const AddNewAuthor = () => {
             </button>
             <button
               type="button"
-              onClick={() => navigate("/authors")}
+              onClick={() => {
+                window.scrollTo(0, 0)
+                navigate("/authors")
+              }
+              }
               className="btn btn-secondary"
             >
               Cancel
@@ -404,6 +425,12 @@ const AddNewAuthor = () => {
           </div>
         </form>
       </div>
+      <Modal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={() => setModal({ show: false, type: "", message: "" })}
+      />
     </div>
   );
 };

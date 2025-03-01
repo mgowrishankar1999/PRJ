@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../../common/modal"
 
 const AddEditorialBoard = () => {
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
     const navigate = useNavigate();
     const { id } = useParams(); // Get ID from URL
 
@@ -68,7 +70,7 @@ const AddEditorialBoard = () => {
     // ✅ Remove Profile Photo
     const handleRemoveImage = () => {
         setProfilePhoto(null);
-        setRemovePhoto(true); 
+        setRemovePhoto(true);
     };
 
     // ✅ Save or Update Editorial Board Member
@@ -95,18 +97,30 @@ const AddEditorialBoard = () => {
             }
 
             const config = { headers: { "Content-Type": "multipart/form-data" } };
-
+            let response;
             if (id) {
                 // Update existing editor
-                await axios.put(`${BASE_URL}/api/editorial-board/${id}`, formData, config);
+                response = await axios.put(`${BASE_URL}/api/editorial-board/${id}`, formData, config);
                 setMessage("Editorial board member updated successfully!");
             } else {
                 // Save new editor
-                await axios.post(`${BASE_URL}/api/editorial-board`, formData, config);
+                response = await axios.post(`${BASE_URL}/api/editorial-board`, formData, config);
                 setMessage("Editorial board member added successfully!");
             }
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal updated successfully!" : "Journal added successfully!",
+                });
 
-            setTimeout(() => navigate('/editorial-board'), 2000);
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/editorial-board');
+                    window.scrollTo(0, 0);
+                }, 800);
+            }
+
         } catch (error) {
             console.error("Error saving editor:", error);
             setMessage("Failed to save editor. Check console for details.");
@@ -132,11 +146,11 @@ const AddEditorialBoard = () => {
                     {/* Journal Selection */}
                     <div>
                         <label className="font-semibold text-green-600">Journal *</label>
-                        <select 
-                            name="journalId" 
-                            value={editor.journalId || ""} 
-                            onChange={handleChange} 
-                            className="form-control" 
+                        <select
+                            name="journalId"
+                            value={editor.journalId || ""}
+                            onChange={handleChange}
+                            className="form-control"
                             required
                         >
                             <option value="">-- Select Journal --</option>
@@ -178,11 +192,11 @@ const AddEditorialBoard = () => {
 
                     <div>
                         <label className="font-semibold text-green-600">Editor Type *</label>
-                        <select 
-                            name="editorType" 
-                            value={editor.editorType || ""} 
-                            onChange={handleChange} 
-                            className="form-control" 
+                        <select
+                            name="editorType"
+                            value={editor.editorType || ""}
+                            onChange={handleChange}
+                            className="form-control"
                             required
                         >
                             <option value="">-- Select Editor Type --</option>
@@ -201,8 +215,8 @@ const AddEditorialBoard = () => {
                         </div>
                     ))}
 
-                          {/* Profile Photo Upload */}
-                    
+                    {/* Profile Photo Upload */}
+
                     {/* Profile Photo Upload */}
                     <div>
                         <label className="font-semibold text-green-600">Profile Photo</label>
@@ -214,11 +228,11 @@ const AddEditorialBoard = () => {
                         <div className="relative">
                             <p className="font-semibold text-green-600">Current Profile Photo:</p>
                             <div className="relative">
-                                <img 
-                                    src={profilePhoto} 
-                                    alt="Profile" 
+                                <img
+                                    src={profilePhoto}
+                                    alt="Profile"
                                     className="w-32 h-32 object-cover border"
-                                    onError={(e) => { e.target.src = "/default-profile.png"; }} 
+                                    onError={(e) => { e.target.src = "/default-profile.png"; }}
                                 />
                                 <button
                                     type="button"
@@ -228,17 +242,28 @@ const AddEditorialBoard = () => {
                                     ✖
                                 </button>
                             </div>
-                            </div> 
-                        )}
+                        </div>
+                    )}
 
 
                     {/* Buttons */}
                     <div className="col-span-2 flex justify-end gap-4 mt-4">
                         <button type="submit" className="btn btn-success">{loading ? "Saving..." : id ? "Update" : "Save"}</button>
-                        <button type="button" onClick={() => navigate('/editorial-board')} className="btn btn-secondary">Cancel</button>
+                        <button type="button" onClick={() => {
+                            window.scrollTo(0, 0)
+                            navigate('/editorial-board')
+                        }
+                        } className="btn btn-secondary">Cancel</button>
                     </div>
                 </form>
             </div>
+
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </div>
     );
 };

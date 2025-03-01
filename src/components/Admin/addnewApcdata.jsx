@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../common/modal"
 
 const AddApcDataForm = () => {
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
     const navigate = useNavigate();
     const { id } = useParams(); // Get ID from URL
 
@@ -72,17 +74,31 @@ const AddApcDataForm = () => {
         setLoading(true);
         setMessage("");
 
+        let response;
         try {
             if (id) {
-                await axios.put(`${BASE_URL}/api/apc/${id}`, formData);
+                response = await axios.put(`${BASE_URL}/api/apc/${id}`, formData);
                 setMessage("APC data updated successfully!");
             } else {
-                await axios.post(`${BASE_URL}/api/apc`, formData);
+                response = await axios.post(`${BASE_URL}/api/apc`, formData);
                 setMessage("APC data added successfully!");
             }
 
-            setTimeout(() => navigate('/apcdata'), 2000);
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal updated successfully!" : "Journal added successfully!",
+                });
+
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/apcdata');
+                    window.scrollTo(0, 0);
+                }, 900);
+            }
         } catch (error) {
+            setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
             console.error("Error saving APC data:", error);
             setMessage("Failed to save data. Try again.");
         } finally {
@@ -101,11 +117,11 @@ const AddApcDataForm = () => {
                     {/* Journal Selection */}
                     <div>
                         <label className="font-semibold text-green-600">Journal *</label>
-                        <select 
-                            name="journalId" 
-                            value={formData.journalId} 
-                            onChange={handleChange} 
-                            className="form-control" 
+                        <select
+                            name="journalId"
+                            value={formData.journalId}
+                            onChange={handleChange}
+                            className="form-control"
                             required
                         >
                             <option value="">-- Select Journal --</option>
@@ -179,6 +195,12 @@ const AddApcDataForm = () => {
                     </div>
                 </form>
             </div>
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </div>
     );
 };

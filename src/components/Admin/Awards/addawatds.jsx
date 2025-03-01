@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../../common/modal";
 
 const AddNewAward = () => {
+  const [modal, setModal] = useState({ show: false, type: "success", message: "" });
   const navigate = useNavigate();
   const { id } = useParams(); // award ID from URL if editing
   const BASE_URL = "http://192.168.1.13:8080";
@@ -62,26 +64,26 @@ const AddNewAward = () => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
-  
+
     try {
       const formData = new FormData();
-  
+
       Object.keys(award).forEach((key) => {
         if (key !== "profilePhoto") {
           formData.append(key, award[key] || "");
         }
       });
-  
+
       if (award.profilePhoto && typeof award.profilePhoto !== "string") {
         formData.append("profilePhoto", award.profilePhoto);
       }
-  
+
       if (removePhoto) {
         formData.append("removePhoto", "true");
       }
-  
+
       const config = { headers: { "Content-Type": "multipart/form-data" } };
-  
+
       if (id) {
         await axios.put(`${BASE_URL}/api/awards/${id}`, formData, config);
         setMessage("Award updated successfully!");
@@ -89,18 +91,32 @@ const AddNewAward = () => {
         await axios.post(`${BASE_URL}/api/awards`, formData, config);
         setMessage("Award added successfully!");
       }
-  
-      setTimeout(() => navigate("/awardslist"), 2000);
+
+      if (response && (response.status === 200 || response.status === 201)) {
+        setModal({
+          show: true,
+          type: "success",
+          message: id ? "Journal updated successfully!" : "Journal added successfully!",
+        });
+
+        setTimeout(() => {
+          setModal({ show: false, type: "", message: "" });
+          navigate('/awardslist');
+          window.scrollTo(0, 0);
+        }, 800);
+      }
+
     } catch (error) {
+      setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
       console.error("Error saving award:", error);
       setMessage("Failed to save award.");
     } finally {
       setLoading(false);
     }
   };
-  
 
-  
+
+
 
   return (
     <div className="container mt-4">
@@ -230,13 +246,22 @@ const AddNewAward = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/awardslist")}
+            onClick={() => {
+              window.scrollTo(0, 0)
+              navigate("/awardslist")
+            }}
             className="btn btn-secondary"
           >
             Cancel
           </button>
         </div>
       </form>
+      <Modal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={() => setModal({ show: false, type: "", message: "" })}
+      />
     </div>
   );
 };

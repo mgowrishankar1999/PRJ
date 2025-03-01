@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { Editor } from "@tinymce/tinymce-react";
 
+import Modal from "../../common/modal";
 // Import CKEditor components
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 
 const AddNewArticle = () => {
+
+  const [modal, setModal] = useState({ show: false, type: "success", message: "" });
   const navigate = useNavigate();
   const { id } = useParams(); // For editing an existing article
   const BASE_URL = "http://192.168.1.13:8080";
+  const editorRef = useRef(null);
 
   // ───────── Article State ─────────
   const [article, setArticle] = useState({
@@ -119,15 +124,25 @@ const AddNewArticle = () => {
   };
 
   // ───────── Handle CKEditor Changes ─────────
-  const handleAbstractChange = (event, editor) => {
-    const data = editor.getData();
-    setArticle((prev) => ({ ...prev, abstractText: data }));
+  // const handleAbstractChange = (event, editor) => {
+  //   const data = editor.getData();
+  //   setArticle((prev) => ({ ...prev, abstractText: data }));
+  // };
+
+  // const handleReferenceChange = (event, editor) => {
+  //   const data = editor.getData();
+  //   setArticle((prev) => ({ ...prev, reference: data }));
+  // };
+
+  const handleEditorChange = (content) => {
+    setArticle((prev) => ({ ...prev, abstractText: content })); // ✅ Use `content`
   };
 
-  const handleReferenceChange = (event, editor) => {
-    const data = editor.getData();
-    setArticle((prev) => ({ ...prev, reference: data }));
+  const handleReferenceChanges = (content) => {
+    setArticle((prev) => ({ ...prev, reference: content })); // ✅ Use `content`
   };
+
+
 
   // ───────── Handle File Changes ─────────
   const handleFileChange = (e) => {
@@ -227,14 +242,30 @@ const AddNewArticle = () => {
       }
 
       const config = { headers: { "Content-Type": "multipart/form-data" } };
+      let response;
       if (id) {
-        await axios.put(`${BASE_URL}/api/articles/${id}`, formData, config);
+        response = await axios.put(`${BASE_URL}/api/articles/${id}`, formData, config);
         setMessage("Article updated successfully!");
       } else {
-        await axios.post(`${BASE_URL}/api/articles`, formData, config);
+        response = await axios.post(`${BASE_URL}/api/articles`, formData, config);
         setMessage("Article added successfully!");
       }
-      setTimeout(() => navigate("/article"), 2000);
+
+      if (response && (response.status === 200 || response.status === 201)) {
+        setModal({
+          show: true,
+          type: "success",
+          message: id ? "Journal updated successfully!" : "Journal added successfully!",
+        });
+
+        setTimeout(() => {
+          setModal({ show: false, type: "", message: "" });
+          navigate('/article');
+          window.scrollTo(0, 0);
+        }, 800);
+      }
+
+
     } catch (error) {
       console.error("Error saving article:", error);
       setMessage("Failed to save article. Check console for details.");
@@ -404,17 +435,87 @@ const AddNewArticle = () => {
             />
           </div>
 
-          <div className="col-span-2">
-            <label className="font-semibold text-green-600">Abstract *</label>
+          {/* ✅ Subject Area (TinyMCE Editor) */}
+          {/* <div className="col-span-2">
+                            <label className="font-semibold text-green-600">Abstract *</label>
+                            <Editor
+                                apiKey="jru2ftka8ewwu68zgu3u33hmfc5kjpy825l4ebkjrhkb8rca"
+                                onInit={(evt, editor) => (editorRef.current = editor)}
+                                value={article.abstractText || ""}
+                                init={{
+                                    height: 300,
+                                    menubar: false,
+                                    plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount",
+                                    toolbar: "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat | help",
+                                }}
+                                onEditorChange={handleEditorChange}
+                            />
+                        </div> */}
+
+
+          {/* CKEditor for Reference */}
+          {/* <div className="col-span-2">
+            <label className="font-semibold text-green-600">Reference</label>
             <textarea
-              name="abstractText"
-              value={article.abstractText || ""}
+              name="reference"
+              value={article.reference || ""}
               onChange={handleChange}
               className="form-control"
               rows="3"
-              required
             ></textarea>
+          </div> */}
+
+
+          {/* ✅ Subject Area (TinyMCE Editor) */}
+          {/* <div className="col-span-2">
+                            <label className="font-semibold text-green-600">References *</label>
+                            <Editor
+                                apiKey="jru2ftka8ewwu68zgu3u33hmfc5kjpy825l4ebkjrhkb8rca"
+                                onInit={(evt, editor) => (editorRef.current = editor)}
+                                value={article.reference || ""}
+                                init={{
+                                    height: 300,
+                                    menubar: false,
+                                    plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount",
+                                    toolbar: "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat | help",
+                                }}
+                                onEditorChange={handleEditorChange}
+                            />
+                        </div> */}
+
+          {/* ✅ Abstract Editor */}
+          <div className="col-span-2">
+            <label className="font-semibold text-green-600">Abstract *</label>
+            <Editor
+              apiKey="jru2ftka8ewwu68zgu3u33hmfc5kjpy825l4ebkjrhkb8rca"
+              value={article.abstractText || ""}
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount",
+                toolbar: "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat | help",
+              }}
+              onEditorChange={handleEditorChange} // ✅ Correct function reference
+            />
           </div>
+
+          {/* ✅ Reference Editor */}
+          <div className="col-span-2">
+            <label className="font-semibold text-green-600">References *</label>
+            <Editor
+              apiKey="jru2ftka8ewwu68zgu3u33hmfc5kjpy825l4ebkjrhkb8rca"
+              value={article.reference || ""}
+              init={{
+                height: 300,
+                menubar: false,
+                plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount",
+                toolbar: "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat | help",
+              }}
+              onEditorChange={handleReferenceChanges} // ✅ Correct function reference
+            />
+          </div>
+
+
 
           <div>
             <label className="font-semibold text-green-600">Keywords</label>
@@ -426,18 +527,6 @@ const AddNewArticle = () => {
             ></textarea>
           </div>
 
-          {/* CKEditor for Reference */}
-          <div className="col-span-2">
-            <label className="font-semibold text-green-600">Reference</label>
-            <textarea
-              name="reference"
-              value={article.reference || ""}
-              onChange={handleChange}
-              className="form-control"
-              rows="3"
-            ></textarea>
-          </div>
-          
           {/* Corresponding Author(s) Section */}
           <div className="col-span-2">
             <label className="font-semibold text-green-600">Corresponding Author(s)</label>
@@ -647,6 +736,13 @@ const AddNewArticle = () => {
           </div>
         </div>
       )}
+
+      <Modal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={() => setModal({ show: false, type: "", message: "" })}
+      />
     </div>
   );
 };

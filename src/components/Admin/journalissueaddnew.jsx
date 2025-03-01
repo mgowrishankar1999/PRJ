@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../common/modal";
 
 const AddNewJournalIssue = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Get ID from URL
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
 
     const [journalIssue, setJournalIssue] = useState({
         journalsId: "",
@@ -93,37 +95,48 @@ const AddNewJournalIssue = () => {
 
         try {
             const formData = new FormData();
-
-            // Append all fields
             Object.keys(journalIssue).forEach(key => {
                 if (journalIssue[key]) {
                     formData.append(key, journalIssue[key]);
                 }
             });
 
-            // Append File Separately
             if (journalIssue.tableOfContents instanceof File) {
                 formData.append("tableOfContents", journalIssue.tableOfContents);
             }
 
             const config = { headers: { "Content-Type": "multipart/form-data" } };
+            let response;
 
             if (id) {
-                await axios.put(`${BASE_URL}/api/journal-issues/${id}`, formData, config);
-                setMessage("Journal issue updated successfully!");
+                response = await axios.put(`${BASE_URL}/api/journal-issues/${id}`, formData, config);
             } else {
-                await axios.post(`${BASE_URL}/api/journal-issues`, formData, config);
-                setMessage("Journal issue added successfully!");
+                response = await axios.post(`${BASE_URL}/api/journal-issues`, formData, config);
             }
 
-            setTimeout(() => navigate('/journalissue'), 2000);
+            // ✅ Ensure response is properly checked
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal Issue updated successfully!" : "Journal Issue added successfully!",
+                });
+
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/journalissue');
+                    window.scrollTo(0, 0);
+                }, 2000);
+            }
         } catch (error) {
+            setModal({ show: true, type: "error", message: "Failed to save Journal Issue. Try again." });
             console.error("Error saving journal issue:", error);
             setMessage("Failed to save journal issue. Try again.");
         } finally {
             setLoading(false);
         }
     };
+
 
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
@@ -201,7 +214,7 @@ const AddNewJournalIssue = () => {
                     <div>
                         <label className="font-semibold text-green-600">Table Of Contents (PDF)</label>
                         <input type="file" name="tableOfContents" onChange={handleFileChange} className="form-control" accept="application/pdf" />
-                        
+
                         {/* PDF Preview */}
                         {filePreview && (
                             <div className="mt-2">
@@ -214,10 +227,20 @@ const AddNewJournalIssue = () => {
                     {/* Buttons */}
                     <div className="col-span-2 flex justify-end gap-4 mt-4">
                         <button type="submit" className="btn btn-success">{loading ? "Saving..." : id ? "Update" : "Save"}</button>
-                        <button type="button" onClick={() => navigate('/journalissue')} className="btn btn-secondary">Back</button>
+                        <button type="button" onClick={() => {
+                            window.scrollTo(0, 0)
+                            navigate('/journalissue')
+                        }}
+                            className="btn btn-secondary">Back</button>
                     </div>
                 </form>
             </div>
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </div>
     );
 };

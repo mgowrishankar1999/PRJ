@@ -80,7 +80,6 @@ import Awards from "./components/Admin/Awards/awards";
 import AddNewAward from "./components/Admin/Awards/addawatds";
 import Awardlist from "./components/frontend/awards";
 import ArticleDetail from "./components/frontend/ArticleDetail";
-import EditorialBoardlist from "./components/frontend/listofjournals/editorialboard";
 import Newsevents from "./components/frontend/newsevents"
 
 // journalnavbarpages
@@ -96,12 +95,96 @@ import Themecurrentissue from "./components/frontend/listofjournals/currentissue
 import Themefaq from "./components/frontend/listofjournals/faq";
 import Themereviewpolicy from "./components/frontend/listofjournals/reviewpolicy";
 import JournalsCategory from "./components/frontend/listofjournals/journals_category";
+import EditorialBoardlist from "./components/frontend/listofjournals/editorialboard";
+
+
+//private routes 
+import PrivateRoute from "./components/privateroutes";
+import { Navigate } from "react-router-dom";
+import OnlinePapers from "./components/Admin/OnlinePapers/onlinepapers";
 
 
 function App() {
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+
+        {/* Protected Routes (Only Accessible if Logged In) */}
+        <Route path="/dashboard" element={<PrivateRoute element={<Home />} />} />
+        <Route path="/journal" element={<PrivateRoute element={<JournalMaster />} />} />
+        <Route path="/addnewjournal" element={<PrivateRoute element={<AddNewJournal />} />} />
+        <Route path="/addnewjournal/:id" element={<PrivateRoute element={<AddNewJournal />} />} />
+
+        <Route path="/disciplinemaster" element={<PrivateRoute element = {<Disciplinemaster />}/>} />
+        <Route path="/addnew" element={<PrivateRoute element = {<AddNew />}/>} />
+        <Route path="/addnew/:id" element={<PrivateRoute element = {<AddNew />}/>} />
+
+
+        <Route path="/journalissue" element={<PrivateRoute element = {<JournalIssue />}/>} />
+        <Route path="/addnewjournalissue" element={<PrivateRoute element = {<AddNewJournalissue />}/>} />
+        <Route path="/addnewjournalissue/:id" element={<PrivateRoute element = {<AddNewJournalissue />}/>} />
+
+
+        <Route path="/editorial-board" element={<PrivateRoute element = {<EditorialBoard />}/>} />
+        <Route path="/addneweditorialboard" element={<PrivateRoute element = {<AddEditorialBoard />}/>} />
+        <Route path="/addneweditorialboard/:id" element={<PrivateRoute element = {<AddEditorialBoard />}/>} />
+
+        <Route path="/apcdata" element={<PrivateRoute element = {<ApcData />}/>} />
+        <Route path="/addnewapcdata" element={<PrivateRoute element = {<AddnewApcdata />}/>} />
+        <Route path="/addnewapcdata/:id" element={<PrivateRoute element = {<AddnewApcdata />}/>} />
+
+
+        <Route path="/university" element={<PrivateRoute element = {<University />}/>} />
+        <Route path="/addnewuniversity" element={<PrivateRoute element = {<AddNewUniversity />}/>} />
+        <Route path="/addnewuniversity/:id" element={<PrivateRoute element = {<AddNewUniversity />}/>} />
+
+        <Route path="/authors" element={<PrivateRoute element = {<Authors />}/>} />
+        <Route path="/addnewauthor" element={<PrivateRoute element = {<AddNewAuthor />}/>} />
+        <Route path="/addnewauthor/:id" element={<PrivateRoute element = {<AddNewAuthor />}/>} />
+
+        <Route path="/article" element={<PrivateRoute element = {<Articles />}/>} />
+        <Route path="/addnewarticles" element={<PrivateRoute element = {<AddNewArticle />}/>} />
+        <Route path="/addnewarticles/:id" element={<PrivateRoute element = {<AddNewArticle />}/>} />
+      
+        <Route path="/memberships" element={<PrivateRoute element = {<Membership />}/>} />
+        <Route path="/addnewmembership" element={<PrivateRoute element = {<AddNewMembership />}/>} />
+        <Route path="/addnewmembership/:id" element={<PrivateRoute element = {<AddNewMembership />}/>} />
+     
+        <Route path="/subscription" element={<PrivateRoute element = {<Subscription />}/>} />
+        <Route path="/addnewsubscription" element={<PrivateRoute element = {<AddNewSubscription />}/>} />
+        <Route path="/addnewsubscription/:id" element={<PrivateRoute element = {<AddNewSubscription />}/>} />
+     
+        <Route path="/subscriptionfile" element={<PrivateRoute element = {<SubscriptionFiles />}/>} />
+        <Route path="/addnewsubscriptionfile" element={<PrivateRoute element = {<AddSubscriptionFile />}/>} />
+        <Route path="/addnewsubscriptionfile/:id" element={<PrivateRoute element = {<AddSubscriptionFile />}/>} />
+     
+        <Route path="/callforpapers" element={<PrivateRoute element = {<CallForPapers />}/>} />
+        <Route path="/addcallforpapers" element={<PrivateRoute element = {<AddCallForPaper />}/>} />
+        <Route path="/addcallforpapers/:id" element={<PrivateRoute element = {<AddCallForPaper />}/>} />
+     
+        <Route path="/testimonial" element={<PrivateRoute element = {<Testimonial />}/>} />
+        <Route path="/addTestimonial" element={<PrivateRoute element = {<AddTestimonial />}/>} />
+        <Route path="/addTestimonial/:id" element={<PrivateRoute element = {<AddTestimonial />}/>} />
+     
+        <Route path="/indexing" element={<PrivateRoute element = {<Indexing />}/>} />
+        <Route path="/addindexing" element={<PrivateRoute element = {<AddIndexing />}/>} />
+        <Route path="/addindexing/:id" element={<PrivateRoute element = {<AddIndexing />}/>} />
+     
+        <Route path="/abstractindexing" element={<PrivateRoute element = {<AbstractIndexing />}/>} />
+        <Route path="/addabstractindexing" element={<PrivateRoute element = {<AddAbstractIndexing />}/>} />
+        <Route path="/addabstractindexing/:id" element={<PrivateRoute element = {<AddAbstractIndexing />}/>} />
+     
+
+        
+       {/* Online Papers files routes */}
+       <Route path="/onlinepaperslist" element={<OnlinePapers />} />
+
+
+
+
+        {/* Redirect any unknown route to /login */}
+        <Route path="*" element={<Navigate to="/login" />} />
         {/* Public Routes */}
         <Route path="/" element={<HeroSection />} />
         <Route path="/submission" element={<SubmissionForm />} />
@@ -114,91 +197,92 @@ function App() {
         <Route path="/publicationethics" element={<Publication />} />
         <Route path="/copyright" element={<Copyright />} />
         <Route path="/aboutus" element={<Aboutus />} />
-
-
         {/* Admin Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Home />} />
 
         {/* Add/Edit Discipline Route */}
-        <Route path="/disciplinemaster" element={<Disciplinemaster />} />
+        {/* <Route path="/disciplinemaster" element={<Disciplinemaster />} />
         <Route path="/addnew" element={<AddNew />} />
-        <Route path="/addnew/:id" element={<AddNew />} />
+        <Route path="/addnew/:id" element={<AddNew />} /> */}
 
         {/* 📚 Journal Management */}
-        <Route path="/journal" element={<JournalMaster />} />
+        {/* <Route path="/journal" element={<JournalMaster />} />
         <Route path="/addnewjournal" element={<AddNewJournal />} />
-        <Route path="/addnewjournal/:id" element={<AddNewJournal />} />
+        <Route path="/addnewjournal/:id" element={<AddNewJournal />} /> */}
 
         {/*journal issue routes  */}
-        <Route path="/journalissue" element={<JournalIssue />} />
+        {/* <Route path="/journalissue" element={<JournalIssue />} />
         <Route path="/addnewjournalissue" element={<AddNewJournalissue />} />
-        <Route path="/addnewjournalissue/:id" element={<AddNewJournalissue />} />
+        <Route path="/addnewjournalissue/:id" element={<AddNewJournalissue />} /> */}
 
         {/*Editorial Board routes  */}
-        <Route path="/editorial-board" element={<EditorialBoard />} />
+        {/* <Route path="/editorial-board" element={<EditorialBoard />} />
         <Route path="/addneweditorialboard" element={<AddEditorialBoard />} />
-        <Route path="/addneweditorialboard/:id" element={<AddEditorialBoard />} />
+        <Route path="/addneweditorialboard/:id" element={<AddEditorialBoard />} /> */}
 
         {/* APC Data routes */}
-        <Route path="/apcdata" element={<ApcData />} />
+        {/* <Route path="/apcdata" element={<ApcData />} />
         <Route path="/addnewapcdata" element={<AddnewApcdata />} />
-        <Route path="/addnewapcdata/:id" element={<AddnewApcdata />} />
+        <Route path="/addnewapcdata/:id" element={<AddnewApcdata />} /> */}
 
         {/* University routes */}
-        <Route path="/university" element={<University />} />
+        {/* <Route path="/university" element={<University />} />
         <Route path="/addnewuniversity" element={<AddNewUniversity />} />
-        <Route path="/addnewuniversity/:id" element={<AddNewUniversity />} />
+        <Route path="/addnewuniversity/:id" element={<AddNewUniversity />} /> */}
 
         {/* Authors routes */}
-        <Route path="/authors" element={<Authors />} />
+        {/* <Route path="/authors" element={<Authors />} />
         <Route path="/addnewauthor" element={<AddNewAuthor />} />
-        <Route path="/addnewauthor/:id" element={<AddNewAuthor />} />
+        <Route path="/addnewauthor/:id" element={<AddNewAuthor />} /> */}
 
         {/* Articles routes */}
-        <Route path="/article" element={<Articles />} />
+        {/* <Route path="/article" element={<Articles />} />
         <Route path="/addnewarticles" element={<AddNewArticle />} />
-        <Route path="/addnewarticles/:id" element={<AddNewArticle />} />
+        <Route path="/addnewarticles/:id" element={<AddNewArticle />} /> */}
 
         {/* Membership routes */}
-        <Route path="/memberships" element={<Membership />} />
+        {/* <Route path="/memberships" element={<Membership />} />
         <Route path="/addnewmembership" element={<AddNewMembership />} />
-        <Route path="/addnewmembership/:id" element={<AddNewMembership />} />
+        <Route path="/addnewmembership/:id" element={<AddNewMembership />} /> */}
 
         {/* Subscription routes */}
-        <Route path="/subscription" element={<Subscription />} />
+        {/* <Route path="/subscription" element={<Subscription />} />
         <Route path="/addnewsubscription" element={<AddNewSubscription />} />
-        <Route path="/addnewsubscription/:id" element={<AddNewSubscription />} />
+        <Route path="/addnewsubscription/:id" element={<AddNewSubscription />} /> */}
 
         {/* Subscription files routes */}
-        <Route path="/subscriptionfile" element={<SubscriptionFiles />} />
+        {/* <Route path="/subscriptionfile" element={<SubscriptionFiles />} />
         <Route path="/addnewsubscriptionfile" element={<AddSubscriptionFile />} />
-        <Route path="/addnewsubscriptionfile/:id" element={<AddSubscriptionFile />} />
+        <Route path="/addnewsubscriptionfile/:id" element={<AddSubscriptionFile />} /> */}
 
         {/* callforpapers files routes */}
-        <Route path="/callforpapers" element={<CallForPapers />} />
+        {/* <Route path="/callforpapers" element={<CallForPapers />} />
         <Route path="/addcallforpapers" element={<AddCallForPaper />} />
-        <Route path="/addcallforpapers/:id" element={<AddCallForPaper />} />
+        <Route path="/addcallforpapers/:id" element={<AddCallForPaper />} /> */}
 
         {/* Testimonial files routes */}
-        <Route path="/testimonial" element={<Testimonial />} />
+        {/* <Route path="/testimonial" element={<Testimonial />} />
         <Route path="/addTestimonial" element={<AddTestimonial />} />
-        <Route path="/addTestimonial/:id" element={<AddTestimonial />} />
+        <Route path="/addTestimonial/:id" element={<AddTestimonial />} /> */}
 
         {/* Indexing files routes */}
-        <Route path="/indexing" element={<Indexing />} />
+        {/* <Route path="/indexing" element={<Indexing />} />
         <Route path="/addindexing" element={<AddIndexing />} />
-        <Route path="/addindexing/:id" element={<AddIndexing />} />
+        <Route path="/addindexing/:id" element={<AddIndexing />} /> */}
 
         {/* Abstract Indexing files routes */}
-        <Route path="/abstractindexing" element={<AbstractIndexing />} />
+        {/* <Route path="/abstractindexing" element={<AbstractIndexing />} />
         <Route path="/addabstractindexing" element={<AddAbstractIndexing />} />
-        <Route path="/addabstractindexing/:id" element={<AddAbstractIndexing />} />
+        <Route path="/addabstractindexing/:id" element={<AddAbstractIndexing />} /> */}
 
         {/* Awards  files routes */}
-        <Route path="/awardslist" element={<Awards />} />
+        {/* <Route path="/awardslist" element={<Awards />} />
         <Route path="/addawards" element={<AddNewAward />} />
-        <Route path="/addawards/:id" element={<AddNewAward />} />
+        <Route path="/addawards/:id" element={<AddNewAward />} /> */}
+
+
+
 
         {/* -------------MENU BAR ROUTES--------------- */}
         <Route path="/authorhub" element={<AuthorSearch />} />
@@ -219,9 +303,7 @@ function App() {
         {/* id route */}
         <Route path="/journals/:journalId/:id?" element={<APCDetail />} />
         <Route path="/articles/:id" element={<ArticleDetail />} />
-        <Route path="journals_category/:id" element = {<JournalsCategory/>}/>
-
-  
+        <Route path="journals_category/:id" element={<JournalsCategory />} />
         {/* pages for journalnavbar */}
         <Route path="/editorialboardlist/:id" element={<EditorialBoardlist />} />
         <Route path="/editorial/:id" element={<Themeeditorial />} />
@@ -235,13 +317,9 @@ function App() {
         <Route path="/currentissue/:id" element={<Themecurrentissue />} />
         <Route path="/faq/:id" element={<Themefaq />} />
         <Route path="/reviewpolicy/:id" element={<Themereviewpolicy />} />
-
-
-
       </>
     )
   );
-
   return (
 
     <div className="app-container">
@@ -249,5 +327,4 @@ function App() {
     </div>
   );
 }
-
 export default App;

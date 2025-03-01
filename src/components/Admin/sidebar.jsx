@@ -56,7 +56,7 @@ function Sidebar() {
         { name: "Call for Paper", path: "/CallForPapers", icon: <FaClipboardList /> },
         { name: "Abstracting & Indexing", path: "/abstractindexing", icon: <FaClipboardList /> },
         { name: "Join Us", path: "/joinus", icon: <FaClipboardList /> },
-        { name: "Online Papers", path: "/onlinepapers", icon: <FaClipboardList /> },
+        { name: "Online Papers", path: "/onlinepaperslist", icon: <FaClipboardList /> },
         { name: "Downloads", path: "/downloads", icon: <FaClipboardList /> },
         { name: "News", path: "/news", icon: <FaClipboardList /> },
         { name: "Career", path: "/carrier", icon: <FaClipboardList /> },

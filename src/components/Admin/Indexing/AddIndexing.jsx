@@ -4,6 +4,7 @@ import axios from "axios";
 import Sidebar from "../../Admin/sidebar";
 import Navbar from "../../Admin/navbar";
 import { Editor } from "@tinymce/tinymce-react";
+import Modal from "../../common/modal";
 
 const AddIndexing = () => {
     const navigate = useNavigate();
@@ -17,6 +18,8 @@ const AddIndexing = () => {
     const [journals, setJournals] = useState([]);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
+
 
     const BASE_URL = "http://192.168.1.13:8080";
 
@@ -72,9 +75,24 @@ const AddIndexing = () => {
                 setMessage("✅ Indexing record added successfully!");
             }
 
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal updated successfully!" : "Journal added successfully!",
+                });
+
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/indexing');
+                    window.scrollTo(0, 0);
+                }, 800);
+            }
+
             console.log("✅ Success:", response.data);
             setTimeout(() => navigate("/indexing"), 2000);
         } catch (error) {
+            setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
             console.error("❌ Error saving indexing record:", error);
             setMessage("❌ Failed to save indexing record.");
         } finally {
@@ -138,7 +156,7 @@ const AddIndexing = () => {
                                         "undo redo | blocks | bold italic forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help",
                                     content_style: "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                                 }}
-                                onEditorChange={handleEditorChange} 
+                                onEditorChange={handleEditorChange}
                             />
                         </div>
 
@@ -154,6 +172,12 @@ const AddIndexing = () => {
                     </form>
                 </div>
             </div>
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </>
     );
 };

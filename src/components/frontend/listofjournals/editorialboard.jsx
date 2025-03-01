@@ -56,7 +56,7 @@ const EditorialBoardlist = () => {
                 {/* Main Content */}
                 <main className="w-4/1 bg-white p-8 shadow-sm flex flex-col rounded-lg">
                     {/* Breadcrumb Navigation */}
-                    <div className="text-sm mb-2">
+                    {/* <div className="text-sm mb-2">
                         <Link to="/" className="text-blue-500 hover:underline">Home</Link>
                         {currentPath.map((segment, index) => (
                             <span key={index}>
@@ -64,7 +64,7 @@ const EditorialBoardlist = () => {
                                 <span className="capitalize">{segment.replace("-", " ")}</span>
                             </span>
                         ))}
-                    </div>
+                    </div> */}
 
                     {/* Editorial Board Header */}
                     <div className="text-3xl font-bold uppercase border-b-2 border-blue-500 pb-2 mb-4">

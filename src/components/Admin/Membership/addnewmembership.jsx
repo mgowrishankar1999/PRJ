@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../../common/modal";
 
 const AddNewMembership = () => {
+  const [modal, setModal] = useState({ show: false, type: "success", message: "" });
   const navigate = useNavigate();
   const { id } = useParams(); // membershipId from URL if editing
   const BASE_URL = "http://192.168.1.13:8080";
@@ -19,7 +21,7 @@ const AddNewMembership = () => {
     "Advisory Membership",
     "HonoraryFellow Membership"
   ];
-  
+
   // State to hold membership fields
   const [membership, setMembership] = useState({
     membershipType: "",
@@ -113,19 +115,33 @@ const AddNewMembership = () => {
       }
 
       const config = { headers: { "Content-Type": "multipart/form-data" } };
-
+      let response;
       if (id) {
         // Update existing
-        await axios.put(`${BASE_URL}/api/memberships/${id}`, formData, config);
+        response = await axios.put(`${BASE_URL}/api/memberships/${id}`, formData, config);
         setMessage("Membership updated successfully!");
       } else {
         // Create new
-        await axios.post(`${BASE_URL}/api/memberships`, formData, config);
+        response = await axios.post(`${BASE_URL}/api/memberships`, formData, config);
         setMessage("Membership added successfully!");
       }
+      if (response && (response.status === 200 || response.status === 201)) {
+        setModal({
+          show: true,
+          type: "success",
+          message: id ? "Journal updated successfully!" : "Journal added successfully!",
+        });
 
-      setTimeout(() => navigate("/memberships"), 2000);
+        setTimeout(() => {
+          setModal({ show: false, type: "", message: "" });
+          navigate('/memberships');
+          window.scrollTo(0, 0);
+        }, 800);
+      }
+
+
     } catch (error) {
+      setModal({ show: false, type: "", message: "" });
       console.error("Error saving membership:", error);
       setMessage("Failed to save membership. Check console for details.");
     } finally {
@@ -146,21 +162,21 @@ const AddNewMembership = () => {
       <form onSubmit={handleSubmit} className="row g-3">
         {/* Membership Type */}
         <div className="col-md-6">
-            <label className="form-label fw-bold text-success">Membership Type *</label>
-            <select
-                name="membershipType"
-                value={membership.membershipType || ""}
-                onChange={handleChange}
-                className="form-control"
-                required
-            >
-                {membershipTypes.map((type, index) => (
-                <option key={index} value={type === "-- Select --" ? "" : type}>
-                    {type}
-                </option>
-                ))}
-            </select>
-            </div>
+          <label className="form-label fw-bold text-success">Membership Type *</label>
+          <select
+            name="membershipType"
+            value={membership.membershipType || ""}
+            onChange={handleChange}
+            className="form-control"
+            required
+          >
+            {membershipTypes.map((type, index) => (
+              <option key={index} value={type === "-- Select --" ? "" : type}>
+                {type}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {/* Membership Year */}
         <div className="col-md-6">
@@ -383,13 +399,22 @@ const AddNewMembership = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/memberships")}
+            onClick={() => {
+              window.scrollTo(0, 0)
+              navigate("/memberships")
+            }}
             className="btn btn-secondary"
           >
             Cancel
           </button>
         </div>
       </form>
+      <Modal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={() => setModal({ show: false, type: "", message: "" })}
+      />
     </div>
   );
 };

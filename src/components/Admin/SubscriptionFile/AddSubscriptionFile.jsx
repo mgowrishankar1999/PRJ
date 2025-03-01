@@ -90,7 +90,10 @@ const AddSubscriptionFile = () => {
                 </div> */}
 
                 <button type="submit" className="btn btn-success">{loading ? "Uploading..." : "Upload"}</button>
-                <button type="button" onClick={() => navigate("/subscriptionfile")} className="btn btn-secondary ms-3">Cancel</button>
+                <button type="button" onClick={() => {
+                    window.scrollTo(0, 0)
+                    navigate("/subscriptionfile")
+                }} className="btn btn-secondary ms-3">Cancel</button>
             </form>
         </div>
     );

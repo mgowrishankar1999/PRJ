@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../../common/modal";
 
 const AddNewUniversity = () => {
     const navigate = useNavigate();
@@ -20,6 +21,7 @@ const AddNewUniversity = () => {
     const [removeLogo, setRemoveLogo] = useState(false);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
 
     const BASE_URL = "http://192.168.1.13:8080";
 
@@ -80,17 +82,32 @@ const AddNewUniversity = () => {
             }
 
             const config = { headers: { "Content-Type": "multipart/form-data" } };
-
+            let response;
             if (id) {
-                await axios.put(`${BASE_URL}/api/universities/${id}`, formData, config);
+                response = await axios.put(`${BASE_URL}/api/universities/${id}`, formData, config);
                 setMessage("University updated successfully!");
             } else {
-                await axios.post(`${BASE_URL}/api/universities`, formData, config);
+                response = await axios.post(`${BASE_URL}/api/universities`, formData, config);
                 setMessage("University added successfully!");
             }
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal updated successfully!" : "Journal added successfully!",
+                });
 
-            setTimeout(() => navigate('/universities'), 2000);
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/universities');
+                    window.scrollTo(0, 0);
+                }, 800);
+            }
+
+
+
         } catch (error) {
+            setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
             console.error("Error saving university:", error);
             setMessage("Failed to save university. Check console for details.");
         } finally {
@@ -159,11 +176,11 @@ const AddNewUniversity = () => {
                         <div className="relative">
                             <p className="font-semibold text-green-600">Current Logo:</p>
                             <div className="relative">
-                                <img 
-                                    src={logo} 
-                                    alt="University Logo" 
+                                <img
+                                    src={logo}
+                                    alt="University Logo"
                                     className="w-32 h-32 object-cover border"
-                                    onError={(e) => { e.target.src = "/default-logo.png"; }} 
+                                    onError={(e) => { e.target.src = "/default-logo.png"; }}
                                 />
                                 <button
                                     type="button"
@@ -173,16 +190,27 @@ const AddNewUniversity = () => {
                                     ✖
                                 </button>
                             </div>
-                        </div> 
+                        </div>
                     )}
 
                     {/* Buttons */}
                     <div className="col-span-2 flex justify-end gap-4 mt-4">
                         <button type="submit" className="btn btn-success">{loading ? "Saving..." : id ? "Update" : "Save"}</button>
-                        <button type="button" onClick={() => navigate('/universities')} className="btn btn-secondary">Cancel</button>
+                        <button type="button" onClick={() => {
+                            window.scrollTo(0, 0)
+                            navigate('/universities')
+                        }
+
+                        } className="btn btn-secondary">Cancel</button>
                     </div>
                 </form>
             </div>
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </div>
     );
 };

@@ -3,10 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../Admin/sidebar";
 import Navbar from "../../Admin/navbar";
+import Modal from "../../common/modal";
 
 const AddTestimonial = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Get ID from URL
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
 
     const [testimonial, setTestimonial] = useState({
         name: "",
@@ -107,9 +109,23 @@ const AddTestimonial = () => {
                 await axios.post(`${BASE_URL}/api/testimonial`, formData, config);
                 setMessage("Testimonial added successfully!");
             }
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal updated successfully!" : "Journal added successfully!",
+                });
 
-            setTimeout(() => navigate("/testimonials"), 2000);
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/testimonials');
+                    window.scrollTo(0, 0);
+                }, 800);
+            }
+
+
         } catch (error) {
+            setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
             console.error("Error saving testimonial:", error);
             setMessage("Failed to save testimonial.");
         } finally {
@@ -216,13 +232,22 @@ const AddTestimonial = () => {
                             <button type="submit" className="btn btn-success">
                                 {loading ? "Saving..." : id ? "Update" : "Save"}
                             </button>
-                            <button type="button" onClick={() => navigate('/testimonial')} className="btn btn-secondary">
+                            <button type="button" onClick={() => {
+                                window.scrollTo(0, 0)
+                                navigate('/testimonial')
+                            }} className="btn btn-secondary">
                                 Cancel
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </div>
     );
 };

@@ -3,11 +3,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "../../Admin/sidebar";
 import Navbar from "../../Admin/navbar";
+import Modal from "../../common/modal";
 
 const AddCallForPaper = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Get ID from URL
-
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
     const [callForPaper, setCallForPaper] = useState({
         issueMonth: "",
         issueYear: "",
@@ -79,18 +80,33 @@ const AddCallForPaper = () => {
 
             const config = { headers: { "Content-Type": "multipart/form-data" } };
 
+            let response;
             if (id) {
                 // ✅ Update existing Call for Paper
-                await axios.put(`${BASE_URL}/api/call-for-paper/${id}`, formData, config);
+                response = await axios.put(`${BASE_URL}/api/call-for-paper/${id}`, formData, config);
                 setMessage("Call for Paper updated successfully!");
             } else {
                 // ✅ Add new Call for Paper
-                await axios.post(`${BASE_URL}/api/call-for-paper`, formData, config);
+                response = await axios.post(`${BASE_URL}/api/call-for-paper`, formData, config);
                 setMessage("Call for Paper added successfully!");
             }
 
-            setTimeout(() => navigate("/callforpapers"), 2000);
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal updated successfully!" : "Journal added successfully!",
+                });
+
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/callforpapers');
+                    window.scrollTo(0, 0);
+                }, 800);
+            }
+
         } catch (error) {
+            setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
             console.error("Error saving Call for Paper:", error);
             setMessage("Failed to save Call for Paper.");
         } finally {
@@ -186,13 +202,23 @@ const AddCallForPaper = () => {
                             <button type="submit" className="btn btn-success">
                                 {loading ? "Saving..." : id ? "Update" : "Save"}
                             </button>
-                            <button type="button" onClick={() => navigate('/callforpapers')} className="btn btn-secondary">
+                            <button type="button" onClick={() => {
+                                window.scrollTo(0, 0)
+                                navigate('/callforpapers')
+                            }}
+                                className="btn btn-secondary">
                                 Cancel
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </div>
     );
 };

@@ -212,7 +212,7 @@ const JournalNavbar = () => {
         {
             label: "Editorial Board",
             icon: <FaUsers />,
-            route: "#", // or `/editorialboard/${getJournalId()}`
+            route: `/editorialboardlist/${getJournalId()}`, // or `/editorialboard/${getJournalId()}`
         },
         {
             label: "Indexing",
@@ -232,7 +232,7 @@ const JournalNavbar = () => {
         {
             label: "(APC)",
             icon: <FaFileAlt />,
-            route: "#", // or `/apc/${getJournalId()}`
+            route: "/Apcs", // or `/apc/${getJournalId()}`
         },
     ];
 

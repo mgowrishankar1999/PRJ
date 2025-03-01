@@ -1,125 +1,184 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import HomeNavbar from "./navbar";
 import MenuBar from "./menubar";
 import SidebarList from "./sidebar";
 import Footer from "./footer";
 
-const OnlinePaper = () => {
+const BASE_URL = "http://192.168.1.13:8080";
+
+const OnlinePaperSubmission = () => {
+  // 🔹 Form State
   const [formData, setFormData] = useState({
-    category: "",
-    paperTitle: "",
-    authorName: "",
-    authorEmail: "",
-    contactNumber: "",
+    disciplineId: "",
+    journalId: "",
+    title: "",
+    pages: "",
+    file: null,
+    firstName: "",
+    lastName: "",
+    email: "",
     country: "",
-    file: null, // Change from `manuscriptFile` to `file`
+    articleId: "",
   });
 
-  const [categories, setCategories] = useState([]);
+  const [disciplines, setDisciplines] = useState([]);
+  const [journals, setJournals] = useState([]);
+  const [filteredJournals, setFilteredJournals] = useState([]);
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
+  // ✅ Fetch Disciplines & Journals
   useEffect(() => {
-    fetch("http://192.168.1.13:8080/api/disciplines")
-      .then(response => response.json())
-      .then(data => setCategories(data))
-      .catch(error => console.error("Error fetching categories:", error));
+    axios.get(`${BASE_URL}/api/disciplines`)
+      .then(response => setDisciplines(response.data))
+      .catch(error => console.error("Error fetching disciplines:", error));
+
+    axios.get(`${BASE_URL}/api/journals`)
+      .then(response => setJournals(response.data))
+      .catch(error => console.error("Error fetching journals:", error));
   }, []);
 
+  // ✅ Handle Input Changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Handle Discipline Change & Filter Journals
+  const handleDisciplineChange = (e) => {
+    const selectedValue = e.target.value;
+    const selectedDisciplineId = selectedValue ? Number(selectedValue) : "";
+
+    setFormData(prev => ({
+      ...prev,
+      disciplineId: selectedDisciplineId,
+      journalId: "", // Reset journal selection when discipline changes
+    }));
+
+    // ✅ Filter journals based on selected discipline
+    if (selectedDisciplineId) {
+      const filtered = journals.filter(journal => journal.disciplineId === selectedDisciplineId);
+      setFilteredJournals(filtered);
+    } else {
+      setFilteredJournals([]);
+    }
+  };
+
+  // ✅ Handle File Upload
   const handleFileChange = (e) => {
-    setFormData({ ...formData, file: e.target.files[0] }); // Change to `file`
+    setFormData(prev => ({ ...prev, file: e.target.files[0] }));
   };
 
+  // ✅ Handle Form Submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formDataToSend = new FormData();
+    setLoading(true);
+    setMessage("");
 
-    Object.keys(formData).forEach((key) => {
-        if (formData[key]) {
-            formDataToSend.append(key, formData[key]);
-        }
-    });
+    console.log("Final Data Sent:", formData); // ✅ Debugging
 
     try {
-        const response = await fetch("http://192.168.1.13:8080/api/submissions", {
-            method: "POST",
-            body: formDataToSend,
+      const formDataToSend = new FormData();
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, value);
+      });
+
+      const response = await axios.post(`${BASE_URL}/api/submissions`, formDataToSend, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      console.log("API Response:", response.data); // ✅ Debug API Response
+
+      if (response.status === 200) {
+        setMessage("✅ Submission Successful!");
+        setFormData({
+          disciplineId: "", journalId: "", title: "", pages: "",
+          file: null, firstName: "", lastName: "", email: "", country: "", articleId: "",
         });
-
-        if (response.ok) {
-            alert("Submission Successful!");
-        } else {
-            alert("Submission Failed. Please try again.");
-        }
+        setFilteredJournals([]); // Reset filtered journals after submission
+      }
     } catch (error) {
-        console.error("Error submitting form:", error);
-        alert("An error occurred. Please try again later.");
+      console.error("Submission Error:", error);
+      if (error.response) {
+        setMessage(`❌ Submission Failed: ${error.response.data}`);
+      } else {
+        setMessage("❌ Submission Failed. Please try again.");
+      }
+    } finally {
+      setLoading(false);
     }
-};
-
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-300 flex flex-col">
+    <div className="min-h-screen bg-gray-100 flex flex-col">
       <HomeNavbar />
       <MenuBar />
       <div className="w-full mx-auto px-4 py-8 flex flex-row gap-12 bg-white">
-        <aside className="w-full bg-white p-2 rounded-lg shadow-sm">
+        <aside className="w-1/4 p-2 rounded-lg shadow-sm">
           <SidebarList />
         </aside>
 
-        <main className="w-4/1 bg-white p-8 shadow-xl rounded-lg border-t-4 border-blue-500">
+        {/* Main Content */}
+        <main className="w-3/4 bg-white p-8 shadow-xl rounded-lg border-t-4 border-blue-500">
           <h1 className="text-3xl font-extrabold text-gray-900 mb-6">Online Paper Submission</h1>
-          <p className="text-gray-700 leading-relaxed text-lg">
-            Online paper submission for project publication allows researchers to submit their work digitally...
-          </p>
-          <h2 className="text-2xl font-bold text-blue-800 mt-6">Manuscript Submission</h2>
+
+          {message && (
+            <div className={`alert ${message.includes("⚠") ? "bg-yellow-100 text-yellow-700" : message.includes("✅") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"} p-3 rounded mt-4`}>
+              {message}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4 mt-4" encType="multipart/form-data">
+
+            {/* 🔹 Discipline Selection */}
             <div>
-              <label className="block font-medium">Category</label>
-              <select name="category" value={formData.category} onChange={handleChange} className="w-full border p-2 rounded">
-                <option value="">Select Category</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>{category.name}</option>
+              <label className="block font-medium">Discipline *</label>
+              <select name="disciplineId" value={formData.disciplineId || ""} onChange={handleDisciplineChange} className="w-full border p-2 rounded" required>
+                <option value="">-- Select Discipline --</option>
+                {disciplines.map(discipline => (
+                  <option key={discipline.id} value={discipline.id}>{discipline.name}</option>
                 ))}
               </select>
             </div>
+
+            {/* 🔹 Journal Selection (Filtered Based on Discipline) */}
             <div>
-              <label className="block font-medium">Paper Title</label>
-              <input type="text" name="paperTitle" value={formData.paperTitle} onChange={handleChange} className="w-full border p-2 rounded" required />
+              <label className="block font-medium">Journal Name *</label>
+              <select name="journalId" value={formData.journalId} onChange={handleChange} className="w-full border p-2 rounded" required>
+                <option value="">-- Select Journal --</option>
+                {filteredJournals.map(journal => (
+                  <option key={journal.id} value={journal.id}>{journal.journalName}</option>
+                ))}
+              </select>
             </div>
+
+            {/* 🔹 Other Fields */}
+            {["title", "pages", "firstName", "lastName", "email", "country"].map((field, index) => (
+              <div key={index}>
+                <label className="block font-medium">{field.replace(/([A-Z])/g, " $1").trim()} *</label>
+                <input type="text" name={field} value={formData[field]} onChange={handleChange} className="w-full border p-2 rounded" required />
+              </div>
+            ))}
+
+            {/* 🔹 File Upload */}
             <div>
-              <label className="block font-medium">Author Name</label>
-              <input type="text" name="authorName" value={formData.authorName} onChange={handleChange} className="w-full border p-2 rounded" required />
+              <label className="block font-medium">Upload Manuscript *</label>
+              <input type="file" name="file" onChange={handleFileChange} className="w-full border p-2 rounded" accept=".pdf,.doc,.docx" required />
             </div>
+
+            {/* 🔹 Submission Button */}
             <div>
-              <label className="block font-medium">Author Email</label>
-              <input type="email" name="authorEmail" value={formData.authorEmail} onChange={handleChange} className="w-full border p-2 rounded" required />
-            </div>
-            <div>
-              <label className="block font-medium">Contact Number</label>
-              <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleChange} className="w-full border p-2 rounded" required />
-            </div>
-            <div>
-              <label className="block font-medium">Country</label>
-              <input type="text" name="country" value={formData.country} onChange={handleChange} className="w-full border p-2 rounded" required />
-            </div>
-            <div>
-              <label className="block font-medium">Upload Manuscript</label>
-              <input type="file" name="file" onChange={handleFileChange} className="w-full border p-2 rounded" required />
-            </div>
-            <div>
-              <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">Submit</button>
+              <button type="submit" className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700" disabled={loading}>
+                {loading ? "Submitting..." : "Submit"}
+              </button>
             </div>
           </form>
         </main>
       </div>
-
       <Footer />
     </div>
   );
 };
 
-export default OnlinePaper;
+export default OnlinePaperSubmission;

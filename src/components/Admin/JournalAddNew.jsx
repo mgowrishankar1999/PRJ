@@ -1,10 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { Editor } from "@tinymce/tinymce-react";
+import Modal from "../common/modal";
 
 const AddNewJournal = () => {
     const navigate = useNavigate();
     const { id } = useParams(); // Get ID from URL
+    const editorRef = useRef(null); // Editor reference
+
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
 
     const [journal, setJournal] = useState(null); // Initially null to prevent errors
     const [coverPage, setCoverPage] = useState(null); // Separate state for file
@@ -47,7 +52,7 @@ const AddNewJournal = () => {
                 issnPrintTo: "",
                 doi: "",
                 publicationFrequency: "",
-                subjectArea: "",
+                subjectArea: "", // ✅ Only TinyMCE editor will handle this
                 coden: "",
                 email: "",
                 startMonth: "",
@@ -68,6 +73,10 @@ const AddNewJournal = () => {
     const handleFileChange = (e) => {
         setCoverPage(e.target.files[0]); // Store file separately
         setRemoveImage(false); // Reset removeImage flag
+    };
+
+    const handleEditorChange = (content) => {
+        setJournal((prev) => ({ ...prev, subjectArea: content }));
     };
 
     // ✅ Remove Image
@@ -106,19 +115,33 @@ const AddNewJournal = () => {
             }
 
             const config = { headers: { "Content-Type": "multipart/form-data" } };
-
+            let response;
             if (id) {
                 // Update existing journal
-                await axios.put(`${BASE_URL}/api/journals/${id}`, formData, config);
+                response = await axios.put(`${BASE_URL}/api/journals/${id}`, formData, config);
                 setMessage("Journal updated successfully!");
             } else {
                 // Save new journal
-                await axios.post(`${BASE_URL}/api/journals`, formData, config);
+                response = await axios.post(`${BASE_URL}/api/journals`, formData, config);
                 setMessage("Journal added successfully!");
             }
 
-            setTimeout(() => navigate('/journal'), 2000);
+            if (response && (response.status === 200 || response.status === 201)) {
+                setModal({
+                    show: true,
+                    type: "success",
+                    message: id ? "Journal updated successfully!" : "Journal added successfully!",
+                });
+
+                setTimeout(() => {
+                    setModal({ show: false, type: "", message: "" });
+                    navigate('/journal');
+                    window.scrollTo(0, 0);
+                }, 800);
+            }
+
         } catch (error) {
+            setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
             console.error("Error saving journal:", error);
             setMessage("Failed to save journal. Check console for details.");
         } finally {
@@ -138,11 +161,11 @@ const AddNewJournal = () => {
                         {/* Discipline Dropdown */}
                         <div>
                             <label className="font-semibold text-green-600">Discipline</label>
-                            <select 
-                                name="disciplineId" 
-                                value={journal.disciplineId || ""} 
-                                onChange={handleDisciplineChange} 
-                                className="form-control mb-3" 
+                            <select
+                                name="disciplineId"
+                                value={journal.disciplineId || ""}
+                                onChange={handleDisciplineChange}
+                                className="form-control mb-3"
                                 required
                             >
                                 <option value="">-- Select Discipline --</option>
@@ -157,11 +180,12 @@ const AddNewJournal = () => {
                                 )}
                             </select>
                         </div>
-                        
+
                         {/* Journal Inputs */}
                         {Object.entries(journal).map(([key, value]) => (
                             key !== "disciplineId" &&
-                            key !== "coverPage" && (
+                            key !== "coverPage" &&
+                            key !== "subjectArea" && ( // ✅ Removed subjectArea input
                                 <div key={key} className="mb-3">
                                     <label className="font-semibold text-green-600">{key.replace(/([A-Z])/g, " $1").trim()}</label>
                                     <input
@@ -169,7 +193,7 @@ const AddNewJournal = () => {
                                         name={key}
                                         value={value || ""}
                                         onChange={handleChange}
-                                        placeholder={key.replace(/([A-Z])/g, " $1").trim()} 
+                                        placeholder={key.replace(/([A-Z])/g, " $1").trim()}
                                         className="form-control"
                                         required={["journalKey", "journalName", "publicationFrequency", "startMonth", "startYear"].includes(key)}
                                     />
@@ -177,58 +201,25 @@ const AddNewJournal = () => {
                             )
                         ))}
 
-
-                        {/* From Month */}
-                            {/* <div className="mb-3">
-                                <label className="font-semibold text-green-600">From Month *</label>
-                                <select 
-                                    name="fromMonth" 
-                                    value={journal.fromMonth || ""} 
-                                    onChange={handleChange} 
-                                    className="form-control" 
-                                    required
-                                >
-                                    <option value="">-- Select Month --</option>
-                                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(month => (
-                                        <option key={month} value={month}>{month}</option>
-                                    ))}
-                                </select>
-                            </div> */}
-
-                            {/* To Month */}
-                            {/* <div className="mb-3">
-                                <label className="font-semibold text-green-600">To Month *</label>
-                                <select 
-                                    name="toMonth" 
-                                    value={journal.toMonth || ""} 
-                                    onChange={handleChange} 
-                                    className="form-control" 
-                                    required
-                                >
-                                    <option value="">-- Select Month --</option>
-                                    {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map(month => (
-                                        <option key={month} value={month}>{month}</option>
-                                    ))}
-                                </select>
-                            </div> */}
-
-                            {/* Year */}
-                            {/* <div className="mb-3">
-                                <label className="font-semibold text-green-600">Year *</label>
-                                <input 
-                                    type="number" 
-                                    name="year" 
-                                    value={journal.year || ""} 
-                                    onChange={handleChange} 
-                                    className="form-control" 
-                                    min="1900" 
-                                    max="2100" 
-                                    required 
-                                />
-                            </div> */}
+                        {/* ✅ Subject Area (TinyMCE Editor) */}
+                        <div className="col-span-2">
+                            <label className="font-semibold text-green-600">Subject Area *</label>
+                            <Editor
+                                apiKey="jru2ftka8ewwu68zgu3u33hmfc5kjpy825l4ebkjrhkb8rca"
+                                onInit={(evt, editor) => (editorRef.current = editor)}
+                                value={journal.subjectArea}
+                                init={{
+                                    height: 300,
+                                    menubar: false,
+                                    plugins: "advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table code help wordcount",
+                                    toolbar: "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat | help",
+                                }}
+                                onEditorChange={handleEditorChange}
+                            />
+                        </div>
 
 
-                        {/* Cover Image Upload */}
+
                         <div className="mb-3">
                             <label className="font-semibold text-green-600">Cover Image</label>
                             <input type="file" name="coverImage" onChange={handleFileChange} className="form-control" accept="image/*" />
@@ -239,9 +230,9 @@ const AddNewJournal = () => {
                             <div className="mb-3">
                                 <p className="font-semibold text-green-600">Current Cover Image:</p>
                                 <div className="relative">
-                                    <img 
-                                        src={coverPage} 
-                                        alt="Cover" 
+                                    <img
+                                        src={coverPage}
+                                        alt="Cover"
                                         className="w-32 h-32 object-cover border"
                                         onError={(e) => { e.target.src = "/default-image.png"; }} // Fallback image
                                     />
@@ -256,6 +247,10 @@ const AddNewJournal = () => {
                             </div>
                         )}
 
+
+
+
+
                         {/* Buttons */}
                         <div className="flex justify-end gap-4 mt-4 col-span-2">
                             <button type="submit" className="btn btn-success">
@@ -268,6 +263,12 @@ const AddNewJournal = () => {
                     </form>
                 )}
             </div>
+            <Modal
+                show={modal.show}
+                type={modal.type}
+                message={modal.message}
+                onClose={() => setModal({ show: false, type: "", message: "" })}
+            />
         </div>
     );
 };
