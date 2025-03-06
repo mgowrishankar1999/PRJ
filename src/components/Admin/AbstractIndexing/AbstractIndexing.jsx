@@ -66,9 +66,9 @@ function AbstractIndexing() {
     return (
         <>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex h-screen">
                 <Sidebar />
-                <div className="container mt-26">
+                <div className="container py-20 overflow-scroll">
                     {/* ✅ Heading & Add Button Right-Aligned */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h3 className="fw-bold">Abstract Indexing Records</h3>
@@ -99,7 +99,7 @@ function AbstractIndexing() {
                                                     <img src={`${BASE_URL}/uploads/${item.image}`} alt="Image" className="img-thumbnail" style={{ width: "50px", height: "50px" }} />
                                                 ) : "No Image"}
                                             </td> */}
-                                            <td>
+                                            <td class=' flex'>
                                                 <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/addabstractindexing/${item.absId}`)}>
                                                     <FaEdit /> Edit
                                                 </button>

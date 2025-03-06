@@ -89,16 +89,16 @@ function Articles() {
   return (
     <>
       <Navbar />
-      <div className="d-flex mb-10">
+      <div className="d-flex max-h-screen ">
         <Sidebar />
-        <div className="container mt-30 h-full">
-          <div className="d-flex justify-content-between align-items-center mb-4">
+        <div className="container py-20 overflow-y-scroll ">
+          <div className="d-flex justify-content-between align-items-center  mb-4">
             <h3 className="fw-bold text-uppercase">Articles</h3>
             <button onClick={() => navigate("/addnewarticles")} className="btn btn-success shadow-sm">
               Add New
             </button>
           </div>
-          <div className="table-responsive">
+          <div className="table-responsive pb-10">
             <table id="articleTable" className="table table-striped table-bordered">
               <thead className="table-dark">
                 <tr>
@@ -127,7 +127,7 @@ function Articles() {
                         {article.volume}/{article.issue}
                       </td>
                       <td>{article.dateOfPublication}</td>
-                      <td>
+                      <td class='flex '>
                         <button
                           className="btn btn-info btn-sm me-2"
                           onClick={() => navigate(`/addnewarticles/${article.id}`)}

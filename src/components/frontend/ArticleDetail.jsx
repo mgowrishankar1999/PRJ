@@ -38,7 +38,7 @@ const ArticleDetail = () => {
                 // Fetch Authors Data
                 const authorsRes = await fetch("http://192.168.1.13:8080/api/authors");
                 const authorsData = await authorsRes.json();
-                
+
                 // Convert authors array to object `{ id: "First Last" }`
                 const authorsMap = authorsData.reduce((acc, author) => {
                     acc[author.id] = `${author.firstName} ${author.lastName}`;
@@ -181,7 +181,7 @@ const ArticleDetail = () => {
                     )}
                 </main>
             </div>
-                <ImageGallery/>
+            <ImageGallery />
             {/* ✅ Footer */}
             <Footer />
         </div>

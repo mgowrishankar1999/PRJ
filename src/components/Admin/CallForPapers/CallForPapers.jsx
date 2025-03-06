@@ -64,9 +64,9 @@ function CallForPapers() {
     return (
         <>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex h-screen ">
                 <Sidebar />
-                <div className="container mt-26">
+                <div className="container py-20 overflow-scroll">
                     {/* ✅ Heading & Add Button Right-Aligned */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h3 className="fw-bold">Call for Papers</h3>

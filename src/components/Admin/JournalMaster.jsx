@@ -93,10 +93,10 @@ function JournalMaster() {
     return (
         <>
             <Navbar />
-            <div className="d-flex mb-10">
+            <div className="d-flex h-screen ">
                 <Sidebar />
-                <div className="container mt-30 h-full">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
+                <div className="container py-20 h-full overflow-scroll">
+                    <div className="d-flex justify-content-between align-items-center pb-2 ">
                         <h3 className="fw-bold text-uppercase">Journal List</h3>
                         <button onClick={() => navigate('/addnewjournal')} className="btn btn-success shadow-sm">
                             Add New
@@ -126,7 +126,7 @@ function JournalMaster() {
                                             <td>{journal.journalName}</td>
                                             <td>{journal.abbrevation}</td>
                                             <td>{journal.email}</td>
-                                            <td>
+                                            <td class='d-flex'>
                                                 <button
                                                     className="btn btn-info btn-sm me-2"
                                                     onClick={() => navigate(`/addnewjournal/${journal.id}`)}

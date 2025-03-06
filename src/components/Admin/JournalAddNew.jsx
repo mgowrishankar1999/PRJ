@@ -256,7 +256,12 @@ const AddNewJournal = () => {
                             <button type="submit" className="btn btn-success">
                                 {loading ? "Saving..." : id ? "Update" : "Save"}
                             </button>
-                            <button type="button" onClick={() => navigate('/journal')} className="btn btn-secondary">
+                            <button type="button" onClick={() => {
+                                navigate('/journal')
+                                window.scrollTo(0, 0);
+                            
+                            }
+                                } className="btn btn-secondary">
                                 Cancel
                             </button>
                         </div>

@@ -299,7 +299,7 @@ const AddAbstractIndexing = () => {
     return (
         <>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex  ">
                 <Sidebar />
                 <div className="container mt-26 bg-white p-10 rounded-lg shadow-md">
                     <h2 className="text-xl font-semibold mb-4">
@@ -308,7 +308,7 @@ const AddAbstractIndexing = () => {
 
                     {message && <div className="alert alert-info">{message}</div>}
 
-                    <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <form onSubmit={handleSubmit} className="grid grid-cols-1  md:grid-cols-2 gap-4">
                         {/* Title Input */}
                         <div>
                             <label className="font-semibold text-green-600">Title *</label>
@@ -354,7 +354,6 @@ const AddAbstractIndexing = () => {
                             <label className="font-semibold text-green-600">Image *</label>
                             <input type="file" onChange={handleImageChange} className="form-control" accept="image/*" />
                         </div>
-
                         {/* Show existing Image with Remove Button */}
                         {id && image && !removeImage && (
                             <div className="relative">
@@ -368,13 +367,17 @@ const AddAbstractIndexing = () => {
                             </div>
                         )}
 
-
                         {/* Buttons */}
                         <div className="col-span-2 flex justify-end gap-4 mt-4">
                             <button type="submit" className="btn btn-success">
                                 {loading ? "Saving..." : id ? "Update" : "Save"}
                             </button>
-                            <button type="button" onClick={() => navigate('/abstractindexing')} className="btn btn-secondary">
+                            <button type="button" onClick={() => {
+                                navigate('/abstractindexing')
+                                window.scrollTo(0, 0);
+                            }
+                            }
+                                className="btn btn-secondary">
                                 Cancel
                             </button>
                         </div>
@@ -390,5 +393,4 @@ const AddAbstractIndexing = () => {
         </>
     );
 };
-
 export default AddAbstractIndexing;

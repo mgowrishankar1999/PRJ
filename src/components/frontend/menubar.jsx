@@ -29,15 +29,15 @@ const MenuBar = () => {
         <div className="bg-white shadow-md py-3 flex justify-around gap-16 px-4 bg-gradient-to-r from-blue-20 to-blue-100 shadow-lg border-b">
             {/* Dropdown Wrapper */}
             <div
-                className="relative"
+                className="relative z-100"
                 ref={dropdownRef}
                 onMouseEnter={() => setIsDropdownOpen(true)}
                 onMouseLeave={() => setIsDropdownOpen(false)}
             >
                 <button
-                    className="text-white whitespace-nowrap font-medium bg-blue-500 rounded px-2 py-2 rounded-sm hover:bg-blue-600 transition flex items-center space-x-1"
+                    className="text-white  whitespace-nowrap font-medium bg-blue-500 rounded px-2 py-2 rounded-sm hover:bg-blue-600 transition flex items-center space-x-1"
                 >
-                    About PRJ Publication 
+                    About PRJ Publication
                     <span class='ms-2'>{isDropdownOpen ? <ChevronUp size={22} /> : <ChevronDown size={22} />}</span>
                 </button>
                 {isDropdownOpen && (

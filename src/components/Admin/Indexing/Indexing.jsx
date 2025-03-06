@@ -82,9 +82,9 @@ function Indexing() {
     return (
         <>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex h-screen">
                 <Sidebar />
-                <div className="container mt-26">
+                <div className="container py-20 overflow-scroll">
                     {/* ✅ Heading & Add Button Right-Aligned */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h3 className="fw-bold">Indexing Records</h3>
@@ -92,8 +92,8 @@ function Indexing() {
                             Add New
                         </a>
                     </div>
-
-                    <div className="table-responsive">
+                    
+                    <div className="table-responsive pb-8">
                         <table id="indexingTable" className="table table-striped table-bordered">
                             <thead className="table-dark">
                                 <tr>
@@ -110,7 +110,7 @@ function Indexing() {
                                             <td>{idx + 1}</td>
                                             <td>{journals[index.journalId] || "Unknown Journal"}</td>
                                             <td>{index.otherDetails}</td>
-                                            <td>
+                                            <td class='flex'>
                                                 <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/addindexing/${index.indexId}`)}>
                                                     <FaEdit /> Edit
                                                 </button>

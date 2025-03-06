@@ -76,10 +76,10 @@ function Awards() {
   return (
     <>
       <Navbar />
-      <div className="d-flex">
+      <div className="d-flex max-h-screen ">
         <Sidebar />
-        <div className="flex-grow-1">
-          <div className="container mt-26">
+        <div className="flex-grow-1 py-20 overflow-scroll">
+          <div className="container ">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <h3 className="fw-bold text-uppercase">Awards & Achievements</h3>
               <button
@@ -170,7 +170,7 @@ function Awards() {
                         <td>{award.content}</td>
 
                         {/* Actions */}
-                        <td>
+                        <td class='flex'> 
                           <button
                             className="btn btn-info btn-sm me-2"
                             onClick={() => navigate(`/addawards/${award.id}`)}

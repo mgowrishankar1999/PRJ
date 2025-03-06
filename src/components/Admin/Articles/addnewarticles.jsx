@@ -584,7 +584,10 @@ const AddNewArticle = () => {
             </button>
             <button
               type="button"
-              onClick={() => navigate("/article")}
+              onClick={() => {
+                navigate("/article")
+                window.scrollTo(0, 0);
+              }}
               className="btn btn-secondary"
             >
               Cancel

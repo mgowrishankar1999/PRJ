@@ -2,7 +2,7 @@
 //downloads.jsx
 
 import React from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import HomeNavbar from "./navbar";
 import MenuBar from "./menubar";
 import SidebarList from "./sidebar";
@@ -11,6 +11,7 @@ import ImageGallery from "./Image";
 
 
 const downloads = () => {
+    const navigate = useNavigate();
 
     const location = useLocation();
     const currentPath = location.pathname.split('/').filter(Boolean);
@@ -26,11 +27,22 @@ const downloads = () => {
 
             <div className="w-full mx-auto px-4 py-8 flex flex-row gap-12 bg-white ">
                 {/* Sidebar on Left */}
-                <aside className="w-full bg-white p-2 rounded-lg shadow-sm ">
+                {/* <aside className="w-full bg-white p-2 rounded-lg shadow-sm ">
                     <SidebarList />
-                </aside>
+                </aside> */}
 
+                <div class='flex flex-col'>
+                    <aside className="w-[25vw] bg-white p-2 rounded-lg shadow-sm">
+                        <SidebarList />
+                    </aside>
+                    <div class='flex flex-col my-3 gap-2 shadow-md font-medium   text-xl '>
 
+                        <button class=' bg-blue-500 hover:bg-blue-600 h-[45px] text-white rounded  '>Submit a Manuscript</button>
+                        <button
+                            onClick={() => navigate('/join_us')}
+                            class=' bg-blue-500 hover:bg-blue-600 h-[45px] text-white rounded'>Join Editorial Board</button>
+                    </div>
+                </div>
                 {/* Main Content */}
                 <main className="w-4/1  bg-white p-8 shadow-sm flex flex-col rounded-lg ">
                     {/* Dynamic Breadcrumb Navigation */}
@@ -80,7 +92,7 @@ const downloads = () => {
 
                 </main>
             </div>
-            <ImageGallery/>
+            <ImageGallery />
             {/* Footer */}
             <Footer />
         </div>

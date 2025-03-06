@@ -55,7 +55,8 @@ const OnlinePaperSubmission = () => {
       disciplineId: selectedDisciplineId,
       journalId: "", // Reset journal selection when discipline changes
     }));
-
+    console.log(prev)
+    
     // ✅ Filter journals based on selected discipline
     if (selectedDisciplineId) {
       const filtered = journals.filter(journal => journal.disciplineId === selectedDisciplineId);

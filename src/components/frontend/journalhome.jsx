@@ -127,7 +127,7 @@ const JournalDetail = () => {
                                 About This Journal
                             </h2>
                             <p className="text-lg text-gray-700">
-                                <strong>Subject Area:</strong> {journal.subjectArea || "No subject area available."}
+                                <strong>Subject Area:</strong> {journal.subjectArea ? journal.subjectArea.replace(/<\/?[^>]+(>|$)/g, "") : "No subject area available."}
                             </p>
                         </div>
                     ) : (

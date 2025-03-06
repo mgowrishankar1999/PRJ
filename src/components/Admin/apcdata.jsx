@@ -89,9 +89,9 @@ function apcdata() {
     return (
         <>
             <Navbar />
-            <div className="d-flex mb-10">
+            <div className="d-flex h-screen">
                 <Sidebar />
-                <div className="container mt-30 h-full">
+                <div className="container py-20 overflow-scroll">
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h3 className="fw-bold text-uppercase">APC Data List</h3>
                         <button onClick={() => navigate('/addnewapcdata')} className="btn btn-success shadow-sm">
@@ -122,7 +122,7 @@ function apcdata() {
                                             <td>{apc.submissionFinal} Days</td>
                                             <td>{apc.issuePerYear}</td>
                                             <td>{apc.indexing2}</td>
-                                            <td>
+                                            <td class='flex'>
                                                 <button
                                                     className="btn btn-info btn-sm me-2"
                                                     onClick={() => navigate(`/addnewapcdata/${apc.id}`)}

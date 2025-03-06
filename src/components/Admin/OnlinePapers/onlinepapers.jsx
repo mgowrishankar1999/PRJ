@@ -89,9 +89,9 @@ function OnlinePapers() {
     return (
         <>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex max-h-screen">
                 <Sidebar />
-                <div className="container mt-4">
+                <div className="container py-20 overflow-scroll">
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h3 className="fw-bold text-uppercase">Online Paper Submissions</h3>
                     </div>

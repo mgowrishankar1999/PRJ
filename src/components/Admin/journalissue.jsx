@@ -39,6 +39,7 @@ function JournalIssue() {
             console.error("Error fetching journals:", error);
         }
     };
+    console.log(journals)
 
     useEffect(() => {
         fetchJournalIssues();
@@ -89,10 +90,10 @@ function JournalIssue() {
     return (
         <>
             <Navbar />
-            <div className="d-flex mb-10">
+            <div className="d-flex h-screen ">
                 <Sidebar />
-                <div className="container mt-30 h-full">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
+                <div className="container py-20 h-full  overflow-scroll">
+                    <div className="d-flex justify-content-between align-items-center pb-2">
                         <h3 className="fw-bold text-uppercase">Journal Issue List</h3>
                         <button onClick={() => navigate('/addnewjournalissue')} className="btn btn-success shadow-sm">
                             Add New

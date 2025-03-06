@@ -106,7 +106,7 @@ const AddNew = () => {
     const [disciplineName, setDisciplineName] = useState("");
     const [department, setDepartment] = useState("");
     const [loading, setLoading] = useState(false);
-    const [modal, setModal] = useState({ show: true, type: "success", message: "" });
+    const [modal, setModal] = useState({ show: false, type: "success", message: "" });
 
     // ✅ Fetch existing data if editing
     useEffect(() => {
@@ -161,36 +161,53 @@ const AddNew = () => {
     return (
 
         <>
-        <div className="p-6 bg-gray-100 min-h-screen">
-            <div className="max-w-[80vw] mx-auto h-auto bg-white p-10 rounded-lg shadow-md">
-                <h2 className="text-xl font-semibold mb-4">{id ? "Edit Discipline" : "Add Discipline"}</h2>
+            <div className="p-6 bg-gray-100 min-h-screen">
+                <div className="max-w-[80vw] mx-auto h-auto bg-white p-10 rounded-lg shadow-md">
+                    <h2 className="text-xl font-semibold mb-4">{id ? "Edit Discipline" : "Add Discipline"}</h2>
 
-                <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        value={disciplineName}
-                        onChange={(e) => setDisciplineName(e.target.value)}
-                        placeholder="Enter discipline name"
-                        className="w-full p-2 border border-gray-300 rounded mb-4"
-                        required
-                    />
-                    <button type="submit" className="bg-purple-500 text-white px-6 py-2 rounded hover:bg-purple-600">
-                        {loading ? "Saving..." : id ? "🔄 Update" : "✅ Save"}
-                    </button>
-                </form>
+                    <form onSubmit={handleSubmit}>
+                        <input
+                            type="text"
+                            value={disciplineName}
+                            onChange={(e) => setDisciplineName(e.target.value)}
+                            placeholder="Enter discipline name"
+                            className="w-full p-2 border border-gray-300 rounded mb-4"
+                            required
+                        />
+                        <div class='flex  justify-end gap-3'>
+
+
+                            <button type="submit" className="bg-purple-500 text-white px-6 py-2 rounded hover:bg-purple-600">
+                                {loading ? "Saving..." : id ? "🔄 Update" : "✅ Save"}
+                            </button>
+                            <button class='' type="button" onClick={() => {
+                                navigate('/disciplinemaster')
+                                window.scrollTo(0, 0);
+
+                            }
+                            } className="btn btn-secondary">
+                                Cancel
+                            </button>
+                        </div>
+
+
+
+
+
+                    </form>
+                </div>
+
+                {/* ✅ Reusable Modal */}
+
             </div>
-
-            {/* ✅ Reusable Modal */}
-           
-        </div>
-        <Modal
+            <Modal
                 show={modal.show}
                 type={modal.type}
                 message={modal.message}
                 onClose={() => setModal({ show: false, type: "", message: "" })}
             />
         </>
-        
+
     );
 };
 

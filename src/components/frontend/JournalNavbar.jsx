@@ -184,12 +184,50 @@ const JournalNavbar = () => {
     const [menuOpen, setMenuOpen] = useState(false); // for mobile toggle
 
     // Fetch journal info
+    // useEffect(() => {
+    //     axios
+    //         .get(`http://192.168.1.13:8080/api/journals/${id}`)
+    //         .then((response) => setJournal(response.data))
+    //         .catch((error) => console.error("Error fetching journal:", error));
+    // }, [id]);
+
     useEffect(() => {
-        axios
-            .get(`http://192.168.1.13:8080/api/journals/${id}`)
-            .then((response) => setJournal(response.data))
-            .catch((error) => console.error("Error fetching journal:", error));
-    }, [id]);
+        const fetchJournal = async (journalId) => {
+            try {
+                const response = await axios.get(`http://192.168.1.13:8080/api/journals/${journalId}`);
+                setJournal(response.data);
+            } catch (error) {
+                console.error("Error fetching journal:", error);
+            }
+        };
+    
+        if (location.pathname.startsWith("/articles")) {
+            // Case: Fetch journal from article
+            axios
+                .get(`http://192.168.1.13:8080/api/articles/${id}`)
+                .then((response) => {
+                    const journalId = response.data.journalId; // Extract journalId
+                    fetchJournal(journalId);
+                })
+                .catch((error) => console.error("Error fetching article:", error));
+        } 
+        else if (location.pathname.startsWith("/journals_category")) {
+            // Case: Fetch journal from journal category
+            axios
+                .get(`http://192.168.1.13:8080/api/journals_category/${id}`)
+                .then((response) => {
+                    const journalId = response.data.journalId; // Assuming response contains a journalId
+                    fetchJournal(journalId);
+                })
+                .catch((error) => console.error("Error fetching journal category:", error));
+        } 
+        else {
+            // Default case: Fetch journal directly
+            fetchJournal(id);
+        }
+    }, [id, location.pathname]);
+    
+    
 
     // Build up dynamic route pieces
     const getJournalId = () => (journal ? journal.id : "default");
@@ -290,8 +328,6 @@ const JournalNavbar = () => {
     return (
         <>
             <div class='sticky top-0 z-50'>
-
-
                 {/* (1) Top bar: Journal name */}
                 <nav className="bg-blue-100 text-white px-6 w-full  py-3 shadow-lg">
                     <div className="container mx-auto flex justify-center items-center">

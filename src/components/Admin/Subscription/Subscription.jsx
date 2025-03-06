@@ -88,9 +88,9 @@ function Subscription() {
   return (
     <>
       <Navbar />
-      <div className="d-flex mb-10">
+      <div className="d-flex max-h-screen">
         <Sidebar />
-        <div className="container mt-30 h-full">
+        <div className="container  py-20 overflow-scroll">
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h3 className="fw-bold text-uppercase">Journal Subscriptions</h3>
             <button
@@ -131,7 +131,7 @@ function Subscription() {
                       <td>{sub.year}</td>
                       {/* <td>{sub.file}</td> */}
                       <td>{sub.status}</td>
-                      <td>
+                      <td class='flex'>
                         <button
                           className="btn btn-info btn-sm me-2"
                           onClick={() => navigate(`/addnewsubscription/${sub.id}`)}

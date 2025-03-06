@@ -58,13 +58,14 @@ function SubscriptionFiles() {
             }
         }
     };
+    console.log(files)
 
     return (
         <>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex max-h-screen">
                 <Sidebar />
-                <div className="container mt-26">
+                <div className="container  py-20 overflow-scroll">
                     {/* <h3 className="fw-bold">Subscription Files</h3> */}
                     <div className="d-flex justify-content-between align-items-center mb-4">
                         <h3 className="fw-bold">Subscription Files</h3>
@@ -89,6 +90,7 @@ function SubscriptionFiles() {
                             <tbody>
                                 {files.length > 0 ? (
                                     files.map((file, index) => (
+                                      
                                         <tr key={file.id}>
                                             <td>{index + 1}</td>
                                             <td>{file.subscriptionId}</td>
@@ -100,8 +102,8 @@ function SubscriptionFiles() {
                                                 </a>
                                             </td>
                                             <td>{file.status === 1 ? "Active" : "Inactive"}</td>
-                                            <td>
-                                                <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/edit-subscription-file/${file.id}`)}>
+                                            <td class='flex'>
+                                                <button className="btn btn-info btn-sm me-2" onClick={() => navigate(`/addnewsubscriptionfile/${file.subscriptionId}`)}>
                                                     <FaEdit /> Edit
                                                 </button>
                                                 <button className="btn btn-danger btn-sm" onClick={() => deleteFile(file.id)}>

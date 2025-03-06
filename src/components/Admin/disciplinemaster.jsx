@@ -57,7 +57,7 @@ function Disciplinemaster() {
             }, 500);
         }
     }, [disciplines]);
-    
+
 
     // ✅ Delete Function
     const deleteDiscipline = async (id) => {
@@ -75,18 +75,18 @@ function Disciplinemaster() {
     return (
         <>
             <Navbar />
-            <div className="d-flex mb-10">
+            <div className="d-flex max-h-screen  ">
                 <Sidebar />
-                <div className="container mt-30 h-full">
-                    <div className="d-flex justify-content-between align-items-center mb-4">
+                <div className="container py-20 overflow-scroll">
+                    <div className="d-flex justify-content-between  align-items-center pb-2">
                         <h3 className="fw-bold text-uppercase">Discipline List</h3>
                         <button onClick={() => navigate('/addnew')} className="btn btn-success shadow-sm">
                             Add New
                         </button>
                     </div>
 
-                    <div className="table-responsive">
-                        <table id="disciplineTable" className="table table-striped table-bordered">
+                    <div className="table-responsive ">
+                        <table id="disciplineTable" className="  table table-striped table-bordered">
                             <thead className="table-dark">
                                 <tr>
                                     <th>No</th>
@@ -100,7 +100,7 @@ function Disciplinemaster() {
                                         <tr key={discipline.id}>
                                             <td>{index + 1}</td>
                                             <td>{discipline.name}</td>
-                                            <td>
+                                            <td class='flex'>
                                                 <button
                                                     className="btn btn-info btn-sm me-2"
                                                     onClick={() => navigate(`/addnew/${discipline.id}`)}

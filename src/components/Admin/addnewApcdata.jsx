@@ -191,7 +191,11 @@ const AddApcDataForm = () => {
                     {/* Buttons */}
                     <div className="col-span-2 flex justify-end gap-4 mt-4">
                         <button type="submit" className="btn btn-success">{loading ? "Saving..." : id ? "Update" : "Save"}</button>
-                        <button type="button" onClick={() => navigate('/apcdata')} className="btn btn-secondary">Cancel</button>
+                        <button type="button" onClick={() => {
+                            navigate('/apcdata')
+                            navigate("/indexing")
+                        }
+                        } className="btn btn-secondary">Cancel</button>
                     </div>
                 </form>
             </div>

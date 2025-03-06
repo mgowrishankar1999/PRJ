@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Modal from "../../common/modal";
 
 const AddNewSubscription = () => {
   const navigate = useNavigate();
   const { id } = useParams(); // Get subscription ID from URL if editing
+
+
+  const [modal, setModal] = useState({ show: false, type: "success", message: "" });
 
   const [subscription, setSubscription] = useState({
     journalId: "",
@@ -69,17 +73,33 @@ const AddNewSubscription = () => {
     setLoading(true);
     setMessage("");
 
+    let response;
     try {
       if (id) {
-        await axios.put(`${BASE_URL}/api/journalsubscription/${id}`, subscription);
+        response = await axios.put(`${BASE_URL}/api/journalsubscription/${id}`, subscription);
         setMessage("Journal subscription updated successfully!");
       } else {
-        await axios.post(`${BASE_URL}/api/journalsubscription`, subscription);
+        response = await axios.post(`${BASE_URL}/api/journalsubscription`, subscription);
         setMessage("Journal subscription added successfully!");
       }
 
-      setTimeout(() => navigate("/subscription"), 2000);
+      // setTimeout(() => navigate("/subscription"), 2000);
+
+      if (response && (response.status === 200 || response.status === 201)) {
+        setModal({
+          show: true,
+          type: "success",
+          message: id ? "subscription updated successfully!" : "subscription added successfully!",
+        });
+
+        setTimeout(() => {
+          setModal({ show: false, type: "", message: "" });
+          navigate('/subscription');
+          window.scrollTo(0, 0);
+        }, 800);
+      }
     } catch (error) {
+      setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
       console.error("Error saving subscription:", error);
       setMessage("Failed to save subscription. Check console for details.");
     } finally {
@@ -220,6 +240,12 @@ const AddNewSubscription = () => {
           </div>
         </form>
       </div>
+      <Modal
+        show={modal.show}
+        type={modal.type}
+        message={modal.message}
+        onClose={() => setModal({ show: false, type: "", message: "" })}
+      />
     </div>
   );
 };

@@ -60,6 +60,62 @@ const AddNewAward = () => {
   };
 
   // Submit form
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   setMessage("");
+
+  //   try {
+  //     const formData = new FormData();
+
+  //     Object.keys(award).forEach((key) => {
+  //       if (key !== "profilePhoto") {
+  //         formData.append(key, award[key] || "");
+  //       }
+  //     });
+
+  //     if (award.profilePhoto && typeof award.profilePhoto !== "string") {
+  //       formData.append("profilePhoto", award.profilePhoto);
+  //     }
+
+  //     if (removePhoto) {
+  //       formData.append("removePhoto", "true");
+  //     }
+
+  //     const config = { headers: { "Content-Type": "multipart/form-data" } };
+
+  //     if (id) {
+  //       await axios.put(`${BASE_URL}/api/awards/${id}`, formData, config);
+  //       setMessage("Award updated successfully!");
+  //     } else {
+  //       await axios.post(`${BASE_URL}/api/awards`, formData, config);
+  //       setMessage("Award added successfully!");
+  //     }
+
+  //     if (response && (response.status === 200 || response.status === 201)) {
+  //       setModal({
+  //         show: true,
+  //         type: "success",
+  //         message: id ? "Journal updated successfully!" : "Journal added successfully!",
+  //       });
+
+  //       setTimeout(() => {
+  //         setModal({ show: false, type: "", message: "" });
+  //         navigate('/awardslist');
+  //         window.scrollTo(0, 0);
+  //       }, 800);
+  //     }
+
+  //   } catch (error) {
+  //     setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
+  //     console.error("Error saving award:", error);
+  //     setMessage("Failed to save award.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -83,20 +139,19 @@ const AddNewAward = () => {
       }
 
       const config = { headers: { "Content-Type": "multipart/form-data" } };
+      let response;
 
       if (id) {
-        await axios.put(`${BASE_URL}/api/awards/${id}`, formData, config);
-        setMessage("Award updated successfully!");
+        response = await axios.put(`${BASE_URL}/api/awards/${id}`, formData, config);
       } else {
-        await axios.post(`${BASE_URL}/api/awards`, formData, config);
-        setMessage("Award added successfully!");
+        response = await axios.post(`${BASE_URL}/api/awards`, formData, config);
       }
 
-      if (response && (response.status === 200 || response.status === 201)) {
+      if (response.status === 200 || response.status === 201) {
         setModal({
           show: true,
           type: "success",
-          message: id ? "Journal updated successfully!" : "Journal added successfully!",
+          message: id ? "Award updated successfully!" : "Award added successfully!",
         });
 
         setTimeout(() => {
@@ -107,15 +162,13 @@ const AddNewAward = () => {
       }
 
     } catch (error) {
-      setModal({ show: true, type: "error", message: "Failed to save Journal. Try again." });
+      setModal({ show: true, type: "error", message: "Failed to save award. Try again." });
       console.error("Error saving award:", error);
       setMessage("Failed to save award.");
     } finally {
       setLoading(false);
     }
   };
-
-
 
 
   return (

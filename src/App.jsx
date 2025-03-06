@@ -18,7 +18,7 @@ import JournalIssue from "./components/Admin/journalissue";
 import AddNewJournalissue from "./components/Admin/journalissueaddnew";
 import ApcData from "./components/Admin/apcdata";
 import AddnewApcdata from "./components/Admin/addnewApcdata";
-import EditorialBoard from "./components/Admin/Editorialboard/Editorialboard";
+import EditorialBoard from "./components/Admin/Editorialboard/editorialboard"
 import AddEditorialBoard from "./components/Admin/Editorialboard/addeditorialboard";
 import University from "./components/Admin/University/university";
 import AddNewUniversity from "./components/Admin/University/addnew";
@@ -41,6 +41,7 @@ import Indexing from "./components/Admin/Indexing/Indexing";
 import AddIndexing from "./components/Admin/Indexing/AddIndexing";
 import AbstractIndexing from "./components/Admin/AbstractIndexing/AbstractIndexing";
 import AddAbstractIndexing from "./components/Admin/AbstractIndexing/AddAbstractIndexing";
+import Joinus from "./components/Admin/Joinus";
 
 // dynamic id route
 
@@ -81,6 +82,7 @@ import AddNewAward from "./components/Admin/Awards/addawatds";
 import Awardlist from "./components/frontend/awards";
 import ArticleDetail from "./components/frontend/ArticleDetail";
 import Newsevents from "./components/frontend/newsevents"
+import Joineditorialboard from "./components/frontend/joineditorialboard";
 
 // journalnavbarpages
 import Themeeditorial from "./components/frontend/listofjournals/editorial";
@@ -116,69 +118,75 @@ function App() {
         <Route path="/addnewjournal" element={<PrivateRoute element={<AddNewJournal />} />} />
         <Route path="/addnewjournal/:id" element={<PrivateRoute element={<AddNewJournal />} />} />
 
-        <Route path="/disciplinemaster" element={<PrivateRoute element = {<Disciplinemaster />}/>} />
-        <Route path="/addnew" element={<PrivateRoute element = {<AddNew />}/>} />
-        <Route path="/addnew/:id" element={<PrivateRoute element = {<AddNew />}/>} />
+        <Route path="/disciplinemaster" element={<PrivateRoute element={<Disciplinemaster />} />} />
+        <Route path="/addnew" element={<PrivateRoute element={<AddNew />} />} />
+        <Route path="/addnew/:id" element={<PrivateRoute element={<AddNew />} />} />
 
 
-        <Route path="/journalissue" element={<PrivateRoute element = {<JournalIssue />}/>} />
-        <Route path="/addnewjournalissue" element={<PrivateRoute element = {<AddNewJournalissue />}/>} />
-        <Route path="/addnewjournalissue/:id" element={<PrivateRoute element = {<AddNewJournalissue />}/>} />
+        <Route path="/journalissue" element={<PrivateRoute element={<JournalIssue />} />} />
+        <Route path="/addnewjournalissue" element={<PrivateRoute element={<AddNewJournalissue />} />} />
+        <Route path="/addnewjournalissue/:id" element={<PrivateRoute element={<AddNewJournalissue />} />} />
 
 
-        <Route path="/editorial-board" element={<PrivateRoute element = {<EditorialBoard />}/>} />
-        <Route path="/addneweditorialboard" element={<PrivateRoute element = {<AddEditorialBoard />}/>} />
-        <Route path="/addneweditorialboard/:id" element={<PrivateRoute element = {<AddEditorialBoard />}/>} />
+        <Route path="/editorial-board" element={<PrivateRoute element={<EditorialBoard />} />} />
+        <Route path="/addneweditorialboard" element={<PrivateRoute element={<AddEditorialBoard />} />} />
+        <Route path="/addneweditorialboard/:id" element={<PrivateRoute element={<AddEditorialBoard />} />} />
 
-        <Route path="/apcdata" element={<PrivateRoute element = {<ApcData />}/>} />
-        <Route path="/addnewapcdata" element={<PrivateRoute element = {<AddnewApcdata />}/>} />
-        <Route path="/addnewapcdata/:id" element={<PrivateRoute element = {<AddnewApcdata />}/>} />
+        <Route path="/apcdata" element={<PrivateRoute element={<ApcData />} />} />
+        <Route path="/addnewapcdata" element={<PrivateRoute element={<AddnewApcdata />} />} />
+        <Route path="/addnewapcdata/:id" element={<PrivateRoute element={<AddnewApcdata />} />} />
 
 
-        <Route path="/university" element={<PrivateRoute element = {<University />}/>} />
-        <Route path="/addnewuniversity" element={<PrivateRoute element = {<AddNewUniversity />}/>} />
-        <Route path="/addnewuniversity/:id" element={<PrivateRoute element = {<AddNewUniversity />}/>} />
+        <Route path="/university" element={<PrivateRoute element={<University />} />} />
+        <Route path="/addnewuniversity" element={<PrivateRoute element={<AddNewUniversity />} />} />
+        <Route path="/addnewuniversity/:id" element={<PrivateRoute element={<AddNewUniversity />} />} />
 
-        <Route path="/authors" element={<PrivateRoute element = {<Authors />}/>} />
-        <Route path="/addnewauthor" element={<PrivateRoute element = {<AddNewAuthor />}/>} />
-        <Route path="/addnewauthor/:id" element={<PrivateRoute element = {<AddNewAuthor />}/>} />
+        <Route path="/authors" element={<PrivateRoute element={<Authors />} />} />
+        <Route path="/addnewauthor" element={<PrivateRoute element={<AddNewAuthor />} />} />
+        <Route path="/addnewauthor/:id" element={<PrivateRoute element={<AddNewAuthor />} />} />
 
-        <Route path="/article" element={<PrivateRoute element = {<Articles />}/>} />
-        <Route path="/addnewarticles" element={<PrivateRoute element = {<AddNewArticle />}/>} />
-        <Route path="/addnewarticles/:id" element={<PrivateRoute element = {<AddNewArticle />}/>} />
-      
-        <Route path="/memberships" element={<PrivateRoute element = {<Membership />}/>} />
-        <Route path="/addnewmembership" element={<PrivateRoute element = {<AddNewMembership />}/>} />
-        <Route path="/addnewmembership/:id" element={<PrivateRoute element = {<AddNewMembership />}/>} />
-     
-        <Route path="/subscription" element={<PrivateRoute element = {<Subscription />}/>} />
-        <Route path="/addnewsubscription" element={<PrivateRoute element = {<AddNewSubscription />}/>} />
-        <Route path="/addnewsubscription/:id" element={<PrivateRoute element = {<AddNewSubscription />}/>} />
-     
-        <Route path="/subscriptionfile" element={<PrivateRoute element = {<SubscriptionFiles />}/>} />
-        <Route path="/addnewsubscriptionfile" element={<PrivateRoute element = {<AddSubscriptionFile />}/>} />
-        <Route path="/addnewsubscriptionfile/:id" element={<PrivateRoute element = {<AddSubscriptionFile />}/>} />
-     
-        <Route path="/callforpapers" element={<PrivateRoute element = {<CallForPapers />}/>} />
-        <Route path="/addcallforpapers" element={<PrivateRoute element = {<AddCallForPaper />}/>} />
-        <Route path="/addcallforpapers/:id" element={<PrivateRoute element = {<AddCallForPaper />}/>} />
-     
-        <Route path="/testimonial" element={<PrivateRoute element = {<Testimonial />}/>} />
-        <Route path="/addTestimonial" element={<PrivateRoute element = {<AddTestimonial />}/>} />
-        <Route path="/addTestimonial/:id" element={<PrivateRoute element = {<AddTestimonial />}/>} />
-     
-        <Route path="/indexing" element={<PrivateRoute element = {<Indexing />}/>} />
-        <Route path="/addindexing" element={<PrivateRoute element = {<AddIndexing />}/>} />
-        <Route path="/addindexing/:id" element={<PrivateRoute element = {<AddIndexing />}/>} />
-     
-        <Route path="/abstractindexing" element={<PrivateRoute element = {<AbstractIndexing />}/>} />
-        <Route path="/addabstractindexing" element={<PrivateRoute element = {<AddAbstractIndexing />}/>} />
-        <Route path="/addabstractindexing/:id" element={<PrivateRoute element = {<AddAbstractIndexing />}/>} />
-     
+        <Route path="/article" element={<PrivateRoute element={<Articles />} />} />
+        <Route path="/addnewarticles" element={<PrivateRoute element={<AddNewArticle />} />} />
+        <Route path="/addnewarticles/:id" element={<PrivateRoute element={<AddNewArticle />} />} />
 
-        
-       {/* Online Papers files routes */}
-       <Route path="/onlinepaperslist" element={<OnlinePapers />} />
+        <Route path="/memberships" element={<PrivateRoute element={<Membership />} />} />
+        <Route path="/addnewmembership" element={<PrivateRoute element={<AddNewMembership />} />} />
+        <Route path="/addnewmembership/:id" element={<PrivateRoute element={<AddNewMembership />} />} />
+
+        <Route path="/subscription" element={<PrivateRoute element={<Subscription />} />} />
+        <Route path="/addnewsubscription" element={<PrivateRoute element={<AddNewSubscription />} />} />
+        <Route path="/addnewsubscription/:id" element={<PrivateRoute element={<AddNewSubscription />} />} />
+
+        <Route path="/subscriptionfile" element={<PrivateRoute element={<SubscriptionFiles />} />} />
+        <Route path="/addnewsubscriptionfile" element={<PrivateRoute element={<AddSubscriptionFile />} />} />
+        <Route path="/addnewsubscriptionfile/:id" element={<PrivateRoute element={<AddSubscriptionFile />} />} />
+
+        <Route path="/callforpapers" element={<PrivateRoute element={<CallForPapers />} />} />
+        <Route path="/addcallforpapers" element={<PrivateRoute element={<AddCallForPaper />} />} />
+        <Route path="/addcallforpapers/:id" element={<PrivateRoute element={<AddCallForPaper />} />} />
+
+        <Route path="/testimonial" element={<PrivateRoute element={<Testimonial />} />} />
+        <Route path="/addTestimonial" element={<PrivateRoute element={<AddTestimonial />} />} />
+        <Route path="/addTestimonial/:id" element={<PrivateRoute element={<AddTestimonial />} />} />
+
+        <Route path="/indexing" element={<PrivateRoute element={<Indexing />} />} />
+        <Route path="/addindexing" element={<PrivateRoute element={<AddIndexing />} />} />
+        <Route path="/addindexing/:id" element={<PrivateRoute element={<AddIndexing />} />} />
+
+        <Route path="/abstractindexing" element={<PrivateRoute element={<AbstractIndexing />} />} />
+        <Route path="/addabstractindexing" element={<PrivateRoute element={<AddAbstractIndexing />} />} />
+        <Route path="/addabstractindexing/:id" element={<PrivateRoute element={<AddAbstractIndexing />} />} />
+
+        <Route path="/awardslist" element={<PrivateRoute element={<Awards />} />} />
+        <Route path="/addawards" element={<PrivateRoute element={<AddNewAward />} />} />
+        <Route path="/addawards/:id" element={<PrivateRoute element={<AddNewAward />} />} />
+
+        <Route path="/joinus" element={<PrivateRoute element={<Joinus />} />} />
+
+
+
+        {/* Online Papers files routes */}
+        <Route path="/onlinepaperslist" element={<OnlinePapers />} />
 
 
 
@@ -299,6 +307,8 @@ function App() {
         <Route path="/Members" element={<Members />} />
         <Route path="/Awards" element={<Awardlist />} />
         <Route path="/newsevents" element={<Newsevents />} />
+        <Route path="/join_us" element={<Joineditorialboard />} />
+
 
         {/* id route */}
         <Route path="/journals/:journalId/:id?" element={<APCDetail />} />

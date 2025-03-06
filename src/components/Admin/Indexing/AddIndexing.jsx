@@ -103,7 +103,7 @@ const AddIndexing = () => {
     return (
         <>
             <Navbar />
-            <div className="d-flex">
+            <div className="d-flex ">
                 <Sidebar />
                 <div className="container mt-26 bg-white p-10 rounded-lg shadow-md">
                     <h2 className="text-xl font-semibold mb-4">
@@ -165,7 +165,12 @@ const AddIndexing = () => {
                             <button type="submit" className="btn btn-success" disabled={loading}>
                                 {loading ? "Saving..." : id ? "Update" : "Save"}
                             </button>
-                            <button type="button" onClick={() => navigate("/indexing")} className="btn btn-secondary">
+                            <button type="button" onClick={() => {
+                                navigate("/indexing")
+                                navigate("/indexing")
+                            }}
+
+                                className="btn btn-secondary">
                                 Cancel
                             </button>
                         </div>
